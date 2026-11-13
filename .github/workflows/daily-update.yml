@@ -1,0 +1,67 @@
+name: Daily NAV update
+
+on:
+  schedule:
+    # 06:07 Bangkok time every day (23:07 UTC). SEC posts the previous
+    # day's NAVs overnight, so this picks up the newest prices each morning.
+    - cron: "7 23 * * *"
+  workflow_dispatch:
+    inputs:
+      days:
+        description: "How many days back to (re)download (7 = normal daily run, 400 = 13 months, 1830 = 5 years)"
+        default: "7"
+      from_date:
+        description: "Optional: download history starting from this date, e.g. 2016-01-01 (leave empty for normal runs)"
+        default: ""
+      to_date:
+        description: "Optional: stop at this date, e.g. 2020-12-31 (use with From date to fill old years in chunks)"
+        default: ""
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: nav-update
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 340
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Download NAVs from SEC
+        env:
+          SEC_API_KEY: ${{ secrets.SEC_API_KEY }}
+          DAYS: ${{ github.event.inputs.days || '7' }}
+          FROM_DATE: ${{ github.event.inputs.from_date }}
+          TO_DATE: ${{ github.event.inputs.to_date }}
+        run: python update.py fetch
+
+      - name: Save new data to the repo (this is the database)
+        run: |
+          git config user.name "nav-bot"
+          git config user.email "nav-bot@users.noreply.github.com"
+          git add data
+          git diff --cached --quiet || git commit -m "NAV update $(TZ=Asia/Bangkok date +%F)"
+          git push
+
+      - name: Build website
+        run: python update.py build
+
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+      - id: deploy
+        uses: actions/deploy-pages@v4
