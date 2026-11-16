@@ -459,9 +459,106 @@ def match_class(name, classes, abbr):
     return None
 
 
+# ------------------------------------------------------------------ master funds
+# Thai feeder funds name their foreign master fund in free text, spelled differently by each
+# AMC. Clean the names up and group feeders that invest in the same master.
+import re
+DROP = {"fund","funds","the","plc","sicav","icav","ucits","trust","portfolio","inc","acc","accumulation","accumulating","dist",
+        "distributing","usd","eur","gbp","jpy","sgd","hkd","shares","share","series","limited","ltd","lux","ireland","sa","s",
+        "a","b","c","i","ii","iu","x","z","sub","of","and","co","company","umbrella"}
+
+# Fund-house and umbrella words. A shorter master name only merges into a longer one when the
+# longer name adds nothing but these (e.g. "State Street SPDR S&P 500 ETF" = "SPDR S&P 500 ETF").
+HOUSE = set("""jpmorgan jpm etfs investment investments state street ishares spdr invesco vanguard amundi blackrock bgf
+fidelity franklin templeton schroder schroders pictet ubs allianz nikko amova janus henderson wellington baillie gifford
+worldwide man polar capital abrdn aberdeen manulife robeco nomura daiwa mirae asset assets management kim first ct columbia
+threadneedle ninety one neuberger berman goldman sachs morgan stanley msif rowe price axa im bnp paribas eastspring lombard
+odier natixis dws xtrackers lyxor hsbc kotak nippon ab alliancebernstein federated hermes guinness jupiter mandg global
+international selection select""".split())
+
+
+# umbrella names that AMCs write both in full and abbreviated
+ABBREV = [("global investors series", "gis"), ("blackrock global funds", "bgf"), ("schroder international selection fund", "schroder isf"),
+          ("franklin templeton investment funds", "ftif"), ("fidelity funds", "fidelity"), ("jpmorgan investment funds", "jpmorgan"),
+          ("jpmorgan funds", "jpmorgan"), ("j.p. morgan", "jpmorgan"), ("jp morgan", "jpmorgan")]
+
+
+def master_key(name):
+    s = (name or "").replace("กองทุนรวม", " ").replace("กองทุน", " ")
+    s = re.sub(r"[®™©]", "", s).lower().replace("s&p", "sp").replace("&", " ")
+    for long, short in ABBREV:
+        s = s.replace(long, short)
+    s = re.split(r"\b(?:share class|class)\b", s)[0]
+    s = re.sub(r"\([^)]*\)", " ", s)
+    s = re.sub(r"[^a-z0-9฀-๿]+", " ", s)
+    return frozenset(t for t in s.split() if t not in DROP)
+
+def group_masters(names):
+    """names: {fund_id: master name}. Returns {fund_id: group_id}, {group_id: display name}."""
+    keys = {fid: master_key(n) for fid, n in names.items()}
+    uniq = sorted({k for k in keys.values() if len(k) >= 2}, key=len)
+    parent = {k: k for k in uniq}
+    def find(k):
+        while parent[k] != k:
+            parent[k] = parent[parent[k]]; k = parent[k]
+        return k
+    # a short name whose words all appear in exactly one longer name is the same master
+    for k in uniq:
+        if len(k) < 3:
+            continue
+        sup = {find(o) for o in uniq if o is not k and k < o and (o - k) <= HOUSE}
+        if len(sup) == 1:
+            parent[find(k)] = sup.pop()
+    gid, out, disp = {}, {}, {}
+    from collections import Counter
+    votes = {}
+    for fid, k in keys.items():
+        if k not in parent:
+            continue
+        root = find(k)
+        g = gid.setdefault(root, len(gid) + 1)
+        out[fid] = g
+        clean = re.sub(r"\s+", " ", (names[fid] or "").replace("กองทุนรวม", "").replace("กองทุน", "")).strip()
+        votes.setdefault(g, Counter())[clean] += 1
+    for g, c in votes.items():
+        best = max(c.items(), key=lambda kv: (kv[1], -len(kv[0])))[0]
+        disp[g] = best
+    return out, disp
+
+
+def hedge_of(fund_fx, cls):
+    """Currency hedging for one share class: from the class name when the fund sets it per class."""
+    c = (cls or "").upper()
+    if re.search(r"(^|[-\s(])UH\b|UNHEDGE", c):
+        return "Unhedged"
+    if re.search(r"(^|[-\s(])H\b|HEDGE", c):
+        return "Hedged"
+    return {"Dynamic hedging (0–105%)": "Dynamic", "Fully hedged (95–105%)": "Hedged",
+            "Unhedged": "Unhedged"}.get(fund_fx, "")
+
+
 # ------------------------------------------------------------------ build
 def pct(a, b):
     return round((a / b - 1) * 100, 2) if a and b else None
+
+
+LONG = (3, 5, 7, 10)  # years, shown as annualised (compound) returns
+
+
+def annual(series, end_date, now, years):
+    """Annualised return over `years`, or None if the history does not reach back that far."""
+    target = end_date - dt.timedelta(days=round(365.25 * years))
+    t = target.isoformat()
+    if series[0][0] > (target + dt.timedelta(days=10)).isoformat():
+        return None
+    old = None
+    for d, v, _ in series:
+        if d <= t:
+            old = v
+        else:
+            break
+    old = old or series[0][1]
+    return round(((now / old) ** (1 / years) - 1) * 100, 2) if now and old else None
 
 
 def build():
@@ -492,6 +589,10 @@ def build():
                 break
         return best
 
+    mgroup, mname = group_masters({fid: f["master"] for fid, f in funds.items() if f.get("master")})
+    msize = {}
+    for g in mgroup.values():
+        msize[g] = msize.get(g, 0) + 1
     latest, per_fund, per_div = [], {}, {}
     newest = last_day["date"]
     today = dt.datetime.now(BKK).date().isoformat()
@@ -503,6 +604,33 @@ def build():
         cls = match_class(name, classes_of.get(pid, set()), funds.get(pid, {}).get("abbr", ""))
         if cls:
             divs.setdefault((pid, cls), []).append([bc, pay, val])
+    # Funds that later split into share classes report their early history as one unnamed
+    # class ("main"). Join that history onto each class that started at the same NAV.
+    stale = (dt.date.fromisoformat(newest) - dt.timedelta(days=14)).isoformat()
+    stitched = 0
+    for pid, cl in classes_of.items():
+        if "main" not in cl or len(cl) < 2:
+            continue
+        ms = sorted(hist[(pid, "main")])
+        if ms[-1][0] >= stale:
+            continue  # the unnamed class is still being reported
+        end_plus = (dt.date.fromisoformat(ms[-1][0]) + dt.timedelta(days=30)).isoformat()
+        cands = []
+        for c in cl - {"main"}:
+            cs = sorted(hist[(pid, c)])
+            f0 = cs[0][0]
+            ref = [x for x in ms if x[0] <= f0] or ms
+            if ms[0][0] < f0 <= end_plus and abs(cs[0][1] / ref[-1][1] - 1) < 0.01:
+                cands.append((c, cs, f0))
+        # Only the class that carries on the old record inherits it: the one whose factsheet
+        # reports 5- or 10-year figures. With no such hint, only an unambiguous single match.
+        long_rec = [x for x in cands if any((fs.get(pid, {}).get(x[0]) or {}).get(k) is not None for k in ("r5y", "r10y"))]
+        for c, cs, f0 in (long_rec or (cands if len(cands) == 1 else [])):
+            if True:
+                hist[(pid, c)] = [x for x in ms if x[0] < f0] + cs
+                divs[(pid, c)] = sorted(divs.get((pid, c), []) + [x for x in divs.get((pid, "main"), []) if x[0] < f0])
+                stitched += 1
+    log(f"Joined early single-class history onto {stitched} share classes")
     for (pid, cls), s in hist.items():
         s.sort()
         d, nav, aum = s[-1]
@@ -533,6 +661,49 @@ def build():
                    "ttm": round(ttm, 4) if ttm else None,
                    "dlast": past[-1] if past else None, "dnext": nxt[0] if nxt else None,
                    "dn": len(dl) or None, "dpol": policy}
+        # Long-term returns. Price-only is always exact. "With dividends" depends on the SEC
+        # dividend record, which has gaps, so check it against the official factsheet figures
+        # at the factsheet date and only trust horizons that agree (within 0.5 point a year).
+        fsf = fs.get(pid, {})
+        fx = fsf.get(cls) or (fsf.get("main") if len(fsf) <= 2 else None) or {}
+        calc = tri if applied else s
+        ok_upto, asof = 99, fx.get("asof")
+        pol0 = (dv["policy"].get(pid) or {})
+        pays = (pol0.get(cls) or (pol0.get("main") if len(pol0) == 1 else None)) == "Y" or bool(divs.get((pid, cls)))
+        # Only a dividend payer can be thrown off by gaps in the SEC dividend record. For other
+        # funds the NAV-based figure is exact, even when an AMC's factsheet is out of date.
+        if asof and pays:
+            a = dt.date.fromisoformat(asof)
+            # some AMCs file a month's factsheet with the previous month's figures,
+            # so accept a match at either the factsheet date or the month-end before it
+            dates = [a, a.replace(day=1) - dt.timedelta(days=1)]
+            checks = {}
+            for n in (3, 5, 10):
+                off = fx.get(f"r{n}y")
+                if off is None:
+                    continue
+                res = []
+                for when in dates:
+                    cut = [x for x in calc if x[0] <= when.isoformat()]
+                    if cut and (when - dt.date.fromisoformat(cut[-1][0])).days <= 7:
+                        c = annual(cut, when, cut[-1][1], n)
+                        if c is not None:
+                            res.append(abs(c - off) <= 0.5)
+                if res:
+                    checks[n] = any(res)
+            if checks and not all(checks.values()):
+                ok_upto = max([0] + [n for n in sorted(checks) if all(checks[m] for m in checks if m <= n)])
+        fs_used = []
+        for n in LONG:
+            divinfo[f"y{n}"] = annual(s, ld, nav, n)
+            if n <= ok_upto:
+                lt_total = annual(calc, ld, calc[-1][1], n)
+            else:
+                lt_total = fx.get(f"r{n}y")
+                if lt_total is not None:
+                    fs_used.append(n)
+            divinfo[f"ty{n}"] = ("nil",) if lt_total is None else lt_total
+        divinfo["fsl"] = fs_used or None
         if applied:
             divinfo.update({"tw1": pct(tr, tago(days=7)), "tm1": pct(tr, tago(days=30)), "tm3": pct(tr, tago(days=91)),
                             "tm6": pct(tr, tago(days=182)), "ty1": pct(tr, tago(days=365)),
@@ -554,6 +725,8 @@ def build():
             "types": ((f.get("classes") or {}).get(cls) or {}).get("types", []),
             "theme": f.get("theme", ""), "region": f.get("region", ""),
             "master": (f.get("master") or "").replace("กองทุน ", "").strip(),
+            **({"mg": mgroup[pid]} if msize.get(mgroup.get(pid), 0) >= 2 else {}),
+            **({"hedge": hedge_of(f.get("fx"), cls)} if f.get("master") and hedge_of(f.get("fx"), cls) else {}),
             "date": d, "nav": nav, "aum": aum,
             "sell": ex[0] if ex else None, "buy": ex[1] if ex else None,
             "d1": pct(nav, s[-2][1]) if len(s) > 1 else None,
@@ -561,7 +734,7 @@ def build():
             "m3": pct(nav, ago(days=91)), "m6": pct(nav, ago(days=182)),
             "y1": pct(nav, ago(days=365)),
             "ytd": pct(nav, nav_on_or_before(s, f"{ld.year - 1}-12-31")),
-            **{k: v for k, v in divinfo.items() if v is not None},
+            **{k: (None if v == ("nil",) else v) for k, v in divinfo.items() if v is not None},
         })
         per_fund.setdefault(pid, {})[cls] = [[x[0], x[1], round(x[2]) if x[2] else None] for x in s]
 
@@ -575,7 +748,8 @@ def build():
     write(SITE / "data" / "latest.json", {
         "built": dt.datetime.now(BKK).isoformat(timespec="minutes"),
         "nav_date": newest, "first_date": files[0].stem,
-        "days": len(files), "rows": latest})
+        "days": len(files), "rows": latest,
+        "masters": {g: n for g, n in mname.items() if msize.get(g, 0) >= 2}})
     page = (ROOT / "index.html").read_text(encoding="utf-8")
     if "<!doctype" not in page[:200].lower():
         page = ('<!doctype html>\n<html lang="th">\n<head>\n<meta charset="utf-8">\n'

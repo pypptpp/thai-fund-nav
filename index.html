@@ -154,7 +154,7 @@ svg.chart{width:100%;height:auto;display:block}
 .tip b{font-size:15px;font-weight:500}
 .readout{display:flex;flex-wrap:wrap;gap:4px 18px;font-size:13px}
 .readout span{color:var(--muted)}
-.trail{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.trail{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:8px;overflow:hidden}
 .trail>div{background:var(--panel);padding:8px 10px}
 .stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px 18px}
 .stats b{display:block;font:500 17px var(--mono)}
@@ -178,7 +178,7 @@ svg.chart{width:100%;height:auto;display:block}
 .simlist b{font:600 14px var(--display);display:block}
 .policy summary{cursor:pointer;color:var(--accent);font-weight:600}
 .policy p{margin:8px 0 0;font-size:13px;line-height:1.7;color:var(--muted)}
-@media (max-width:900px){.kpis{grid-template-columns:repeat(3,minmax(0,1fr))}.cols{grid-template-columns:minmax(0,1fr)}.trail{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media (max-width:900px){.kpis{grid-template-columns:repeat(3,minmax(0,1fr))}.cols{grid-template-columns:minmax(0,1fr)}.trail{grid-template-columns:repeat(5,minmax(0,1fr))}}
 @media (max-width:560px){.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}.fhead{grid-template-columns:minmax(0,1fr)}.fprice{text-align:left;align-items:flex-start}.stats{grid-template-columns:minmax(0,1fr)}.feerow{grid-template-columns:96px minmax(0,1fr) auto}}
 /* compare */
 .cmpb{border:1px solid var(--line);background:var(--panel);border-radius:4px;width:20px;height:20px;padding:0;cursor:pointer;font:600 13px/1 var(--mono);color:var(--muted);margin-right:8px;vertical-align:1px}
@@ -232,6 +232,51 @@ body.has-tray{padding-bottom:96px}
 .trtoggle{display:inline-flex;align-items:center;gap:6px;font-size:13px;color:var(--ink);cursor:pointer}
 .dtag{font:500 10px var(--mono);border-radius:4px;padding:1px 5px;margin-left:6px;vertical-align:2px;background:var(--accent-soft);color:var(--accent)}
 @media (max-width:560px){.divstats{grid-template-columns:repeat(2,minmax(0,1fr))}}
+sup.fs{color:var(--accent);font-weight:600;margin-left:1px}
+@media (max-width:560px){.trail{grid-template-columns:repeat(2,minmax(0,1fr))}}
+/* same master fund */
+.mlist{display:flex;flex-direction:column;gap:14px}
+.mintro{display:flex;flex-wrap:wrap;gap:6px 16px;align-items:baseline}
+.mintro h3{font:600 17px var(--display);margin:0}
+.mintro .sub{flex:1 1 360px}
+.mtools{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.msearch{flex:1 1 320px}
+.mtools .tabs{align-items:center;gap:4px}
+.mtools .tabs .sub{margin-right:4px}
+.mthemes{display:grid;grid-template-columns:repeat(auto-fill,minmax(178px,1fr));gap:8px}
+.mtile{display:flex;flex-direction:column;gap:2px;text-align:left;background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:10px 12px;cursor:pointer;min-width:0}
+.mtile:hover{border-color:var(--accent)}
+.mtile[aria-pressed="true"]{border-color:var(--accent);background:var(--accent-soft)}
+.mtile b{font:600 14px var(--display)}
+.mtile .num{font-size:16px}
+.mhead{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 14px}
+.mhead h4{font:600 16px var(--display);margin:0}
+.mitem{display:flex;flex-direction:column;gap:8px}
+.mrow{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:14px;align-items:center;width:100%;text-align:left;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:11px 14px;cursor:pointer}
+.mrow:hover{border-color:var(--accent)}
+.mitem.open .mrow{border-color:var(--accent);background:var(--accent-soft)}
+.mrow b{font:600 15px var(--display);display:block;overflow-wrap:anywhere}
+.mrow .mret{text-align:right;font-family:var(--mono);font-variant-numeric:tabular-nums}
+.mrow .mret .lbl{display:block}
+.chev{font-size:18px;color:var(--muted);transition:transform .15s}
+.mitem.open .chev{transform:rotate(90deg)}
+@media (max-width:560px){.mrow{grid-template-columns:minmax(0,1fr) auto}.chev{display:none}}
+.mcard .phead h3{font-size:17px;overflow-wrap:anywhere}
+.mcard .phead .go{margin-left:auto}
+.go.sm{padding:7px 12px;font-size:13px}
+.mstats{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.mstats>div{background:var(--panel);padding:9px 12px;min-width:0}
+.mstats b{display:block;font:500 16px var(--mono)}
+.hchips .chip{font-size:12px;padding:4px 10px}
+.mtab{width:100%;min-width:720px}
+.mtab tbody tr{cursor:pointer}
+.mtab tbody tr:hover td{background:var(--accent-soft)}
+.mtab tr[aria-current="true"] td{background:var(--accent-soft);font-weight:600}
+.hpill{font:500 11px var(--mono);border-radius:999px;padding:1px 8px;border:1px solid var(--line);color:var(--muted);white-space:nowrap}
+.hpill.Unhedged{border-color:var(--c3);color:var(--c3)}
+.hpill.Hedged{border-color:var(--c0);color:var(--c0)}
+.hpill.Dynamic{border-color:var(--c4);color:var(--c4)}
+.cmpnote{border-left:3px solid var(--accent)}
 footer{font-size:12px;color:var(--muted);line-height:1.6}
 footer a{color:var(--accent)}
 
@@ -256,8 +301,8 @@ footer a{color:var(--accent)}
   </section>
 
   <section class="themes" aria-label="Themes at a glance">
-    <div class="themes-head"><h2>Themes at a glance</h2><span class="sub">Median return of fund classes in each theme · tap to filter</span>
-      <div class="tabs" id="thPeriod"><button data-p="m1" aria-pressed="false">1M</button><button data-p="ytd" aria-pressed="true">YTD</button><button data-p="y1" aria-pressed="false">1Y</button></div></div>
+    <div class="themes-head"><h2>Themes at a glance</h2><span class="sub">Median return of fund classes in each theme (3Y and longer: a year) · tap to filter</span>
+      <div class="tabs" id="thPeriod"><button data-p="m1" aria-pressed="false">1M</button><button data-p="ytd" aria-pressed="true">YTD</button><button data-p="y1" aria-pressed="false">1Y</button><button data-p="y3" aria-pressed="false">3Y</button><button data-p="y5" aria-pressed="false">5Y</button><button data-p="y7" aria-pressed="false">7Y</button><button data-p="y10" aria-pressed="false">10Y</button></div></div>
     <div class="tiles" id="tiles"></div>
   </section>
 
@@ -287,6 +332,7 @@ footer a{color:var(--accent)}
     <div class="tabs big" id="viewTabs" role="tablist">
       <button data-v="prices" aria-pressed="true">Prices &amp; returns</button>
       <button data-v="rank" aria-pressed="false">Fees &amp; ranking</button>
+      <button data-v="master" aria-pressed="false">Same master fund</button>
     </div>
     <label class="trtoggle" title="Adds dividends back, so funds that pay out are not shown as falling on payout day"><input type="checkbox" id="trOn"> Returns include dividends</label>
     <label class="sub" id="oneWrap" hidden><input type="checkbox" id="oneClass" checked> One class per fund</label>
@@ -298,6 +344,19 @@ footer a{color:var(--accent)}
     <p class="sub">Each factor is a percentile within the funds shown (100 = best). The score is the weighted average of the factors a fund has data for. Funds without a 3-year record get no score.</p>
   </details>
 
+  <div class="mlist" id="masterList" hidden>
+    <div class="mintro">
+      <h3>Same master fund</h3>
+      <span class="sub" id="mIntro">Thai funds that feed the same foreign master fund hold the same portfolio. What differs is the Thai fund's fees, its currency hedging and its dividend policy.</span>
+    </div>
+    <div class="mtools">
+      <label class="search msearch"><span aria-hidden="true">⌕</span><input id="mSearch" type="search" placeholder="Search master funds, e.g. gold, S&amp;P 500, PIMCO, semiconductor" autocomplete="off"></label>
+      <div class="tabs" id="mPer"><span class="sub">Returns over</span><button data-mp="y1">1Y</button><button data-mp="y3">3Y</button><button data-mp="y5">5Y</button><button data-mp="y10">10Y</button></div>
+      <div class="tabs" id="mSortT"><button data-ms="ter">Lowest fee first</button><button data-ms="ret">Best return first</button></div>
+    </div>
+    <div class="mthemes" id="mThemes" role="group" aria-label="Master fund themes"></div>
+    <div id="mBody" class="mlist"></div>
+  </div>
   <div class="board">
     <table>
       <thead id="head"></thead>
@@ -308,7 +367,7 @@ footer a{color:var(--accent)}
   <button class="more" id="more" hidden>Show more</button>
 
   <footer>
-    NAV per unit in THB as reported by each AMC to the SEC. Board returns are price returns from NAV (dividends paid out are not added back). Fees, 3Y/5Y returns, peer averages, volatility and risk level come from each fund's latest monthly factsheet filed with the SEC; for feeder funds the TER covers the Thai fund only, not the master fund's own fees. The score is a screening aid, not investment advice.
+    NAV per unit in THB as reported by each AMC to the SEC. Returns come from daily NAV, with dividends added back when "Returns include dividends" is on. 3-, 5-, 7- and 10-year figures are compound returns a year. † marks an official factsheet figure, used where the SEC dividend record for a fund is incomplete. Fees, the official return table, peer averages, volatility and risk level come from each fund's latest monthly factsheet filed with the SEC; for feeder funds the TER covers the Thai fund only, not the master fund's own fees. The score is a screening aid, not investment advice.
     Data: <a href="https://secopendata.sec.or.th" target="_blank" rel="noopener">SEC Open Data</a>.
   </footer>
 </div>
@@ -325,7 +384,9 @@ const store = {get(k,d){try{return JSON.parse(localStorage.getItem(k))??d}catch{
 const PICKS = ["Watchlist","Pays dividends","Technology","Healthcare","Gold","ETF","Index","Money Market","Dividend","Property & REIT","Infrastructure","Energy & Resources","Clean Energy & Climate","Private Assets","Small & Mid Cap","Financials","Consumer"];
 const TILE_PICKS = PICKS.filter(p => p !== "Watchlist");
 const TAXES = ["SSF","RMF","ThaiESG","ThaiESGX","LTF"];
-let all = [], view = [], shown = 100, thP = "ytd";
+let all = [], view = [], shown = 100, thP = "ytd", MASTERS = {}, masterShown = 15, mstate = {}, mP = "y3", mSort = "ter",
+    mTheme = "", mQuery = "", mOpen = new Set();
+const MPER = {y1:"1 year", y3:"3 years", y5:"5 years", y10:"10 years"};
 let st = {q:"", amc:"", pick:"", region:"", type:"", cat:"", tax:"", sort:"aum", dir:-1, view:"prices", one:true, tr:true, ...store.get("navboard2", {})};
 st.q = "";
 let watch = new Set(store.get("watch", []));
@@ -337,8 +398,12 @@ const esc = s => String(s??"").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",
 const thDate = d => { if(!d) return ""; const [y,m,dd]=d.split("-"); return new Date(+y,m-1,+dd).toLocaleDateString("th-TH",{day:"numeric",month:"short",year:"numeric"}); };
 const median = a => { const s=a.filter(v=>v!=null).sort((x,y)=>x-y); return s.length ? s[Math.floor(s.length/2)] : null; };
 const inPick = (r,p) => p==="Watchlist" ? watch.has(r.key) : p==="Pays dividends" ? r.div : (r.theme===p || r.types.includes(p));
-const RET = ["w1","m1","m3","m6","ytd","y1"];
-function applyTR(){ all.forEach(r => RET.forEach(k => { r[k] = st.tr && r["t"+k] != null ? r["t"+k] : r._p[k]; })); }
+const RET = ["w1","m1","m3","m6","ytd","y1","y3","y5","y7","y10"], LONGK = ["y3","y5","y7","y10"];
+function applyTR(){ all.forEach(r => RET.forEach(k => { r[k] = st.tr && r["t"+k] !== undefined ? r["t"+k] : r._p[k]; })); }
+const fromFs = (r, k) => st.tr && LONGK.includes(k) && (r.fsl || []).includes(+k.slice(1));
+const fmtLT = (r, k) => r[k] == null
+  ? (st.tr && r.fsl && LONGK.includes(k) ? '<span class="flat" title="The SEC dividend record for this fund is incomplete, so this period cannot be calculated">n/a</span>' : '<span class="flat">–</span>')
+  : fmtPct(r[k]) + (fromFs(r, k) ? `<sup class="fs" title="Official factsheet figure as of ${thDate(r.asof)}. The SEC dividend record for this fund is incomplete.">†</sup>` : "");
 const fmtYld = v => v == null ? '<span class="flat">–</span>' : v.toFixed(2)+"%";
 function adjSeries(s, dl){
   if (!dl || !dl.length || s.length < 2) return s;
@@ -354,11 +419,11 @@ const rsColor = n => n<=3 ? "var(--up)" : n<=5 ? "var(--accent)" : n<=6 ? "var(-
 const rsBadge = n => n ? `<span class="rs" style="background:${rsColor(+n)}" title="SEC risk level ${n} of 8">${n}</span>` : '<span class="flat">–</span>';
 const avg = (...v) => { const x=v.filter(a=>a!=null); return x.length ? x.reduce((s,a)=>s+a,0)/x.length : null; };
 const COLS = {
-  prices: [["name","Fund","l"],["amc","AMC","l"],["nav","NAV"],["d1","1D"],["m1","1M"],["m3","3M"],["ytd","YTD"],["y1","1Y"],["yld","Yield"],["aum","Net assets"]],
+  prices: [["name","Fund","l"],["amc","AMC","l"],["nav","NAV"],["d1","1D"],["m1","1M"],["m3","3M"],["ytd","YTD"],["y1","1Y"],["y3","3Y p.a."],["y5","5Y p.a."],["y7","7Y p.a."],["y10","10Y p.a."],["yld","Yield"],["aum","Net assets"]],
   rank:   [["score","Score"],["name","Fund","l"],["ter","TER"],["mgmt","Mgmt fee"],["load","Sales fees"],["r3y","3Y p.a."],["vpeer3y","vs peers 3Y"],["sd3y","Volatility 3Y"],["rr3y","Return / risk"],["yld","Yield"],["risk","Risk"],["aum","Net assets"]],
 };
 const FACTORS = [
-  {k:"ret",  label:"Long-term return", sub:"3Y and 5Y return p.a., averaged", get:r=>avg(r.r3y,r.r5y), hi:true, w:30},
+  {k:"ret",  label:"Long-term return", sub:"3Y and 5Y return p.a., averaged", get:r=>avg(r.r3y ?? r.y3, r.r5y ?? r.y5), hi:true, w:30},
   {k:"peer", label:"Beats its peer group", sub:"3Y return minus SEC peer average", get:r=>r.vpeer3y, hi:true, w:20},
   {k:"rr",   label:"Return per unit of risk", sub:"3Y return ÷ 3Y volatility", get:r=>r.rr3y, hi:true, w:20},
   {k:"cost", label:"Low total expense", sub:"TER, % a year, actually charged", get:r=>r.ter, hi:false, w:20},
@@ -373,7 +438,7 @@ function scoreAll(rows){
     const v = rows.map(r=>[r,f.get(r)]).filter(x=>x[1]!=null && isFinite(x[1])).sort((a,b)=>f.hi ? a[1]-b[1] : b[1]-a[1]);
     const n = v.length; v.forEach(([r],i) => { (pct[r.key] ??= {})[f.k] = n>1 ? i/(n-1)*100 : 50; }); });
   rows.forEach(r => { r.score = null; r.parts = pct[r.key] || {};
-    if (r.r3y == null) return;
+    if ((r.r3y ?? r.y3) == null) return;
     let s=0, w=0; FACTORS.forEach(f => { const p = r.parts[f.k]; if (W[f.k] && p != null) { s += W[f.k]*p; w += W[f.k]; } });
     r.score = w ? Math.round(s/w) : null; });
 }
@@ -396,8 +461,9 @@ function init(d){
     rr3y: (r.r3y!=null && r.sd3y>0) ? +(r.r3y/r.sd3y).toFixed(2) : null,
     risk: r.risk ? +r.risk : null,
     div: r.dpol === "Y" || !!r.yld,
-    _p: {w1:r.w1, m1:r.m1, m3:r.m3, m6:r.m6, ytd:r.ytd, y1:r.y1},
-    hay: (r.name+" "+r.abbr+" "+r.en+" "+r.th+" "+r.amc+" "+(r.theme||"")+" "+(r.region||"")+" "+(r.types||[]).join(" ")).toLowerCase()}));
+    _p: {w1:r.w1, m1:r.m1, m3:r.m3, m6:r.m6, ytd:r.ytd, y1:r.y1, y3:r.y3, y5:r.y5, y7:r.y7, y10:r.y10},
+    hay: (r.name+" "+r.abbr+" "+r.en+" "+r.th+" "+r.amc+" "+(r.master||"")+" "+(d.masters?.[r.mg]||"")+" "+(r.theme||"")+" "+(r.region||"")+" "+(r.types||[]).join(" ")).toLowerCase()}));
+  MASTERS = d.masters || {};
   applyTR();
   $("#stamp").innerHTML = `<b>NAV ${thDate(d.nav_date)}</b>updated ${esc(d.built.replace("T"," "))} ICT · ${d.days} days stored`;
   // pulse
@@ -422,7 +488,7 @@ function init(d){
   opts("#fTax", TAXES.filter(t=>byTax[t]), st.tax);
   const n = p => p==="Watchlist" ? "" : all.filter(r=>inPick(r,p)).length;
   $("#picks").innerHTML = PICKS.filter(p => p==="Watchlist" || n(p)).map(p=>`<button class="chip" data-pick="${esc(p)}" aria-pressed="${st.pick===p}">${p==="Watchlist"?"★ Watchlist":esc(p)}<span class="n">${n(p)}</span></button>`).join("");
-  buildWeights(); tiles(); divCal(); bind(); setView(st.view, true);
+  buildWeights(); tiles(); divCal(); bindMasters(); bind(); setView(st.view, true);
   all.forEach(r => { bySlug[slugOf(r)] = r; });
   window.addEventListener("hashchange", route);
   route();
@@ -483,6 +549,13 @@ function apply(){
     (!st.q || r.hay.includes(st.q)) && (!st.amc || r.amc===st.amc) &&
     (!st.pick || inPick(r, st.pick)) && (!st.region || r.region===st.region) &&
     (!st.type || r.types.includes(st.type)) && (!st.cat || r.cat===st.cat) && (!st.tax || r.tax===st.tax));
+  const isM = st.view === "master";
+  $(".board").hidden = isM; $("#masterList").hidden = !isM;
+  if (isM) {
+    const filtered = st.q||st.amc||st.pick||st.region||st.type||st.cat||st.tax;
+    $("#reset").hidden = !filtered; $("#count").textContent = ""; $("#more").hidden = true;
+    renderMasters(); return;
+  }
   if (st.view === "rank") {
     scoreAll(view);
     if (st.one) { const best = {};
@@ -503,10 +576,143 @@ function apply(){
 function setView(v, first){
   st.view = v;
   $("#viewTabs").querySelectorAll("button").forEach(b=>b.setAttribute("aria-pressed", b.dataset.v===v));
-  $("#weights").hidden = v!=="rank"; $("#rankNote").hidden = v!=="rank"; $("#oneWrap").hidden = v!=="rank";
-  const valid = COLS[v].map(c=>c[0]);
-  if (!first || !valid.includes(st.sort)) { st.sort = v==="rank" ? "score" : "aum"; st.dir = -1; }
+  $("#weights").hidden = v!=="rank"; $("#rankNote").hidden = v!=="rank"; $("#oneWrap").hidden = v==="prices";
+  const valid = (COLS[v] || []).map(c=>c[0]);
+  if (v !== "master" && (!first || !valid.includes(st.sort))) { st.sort = v==="rank" ? "score" : "aum"; st.dir = -1; }
   shown = 100; apply();
+}
+
+function masterGroups(rows, one){
+  const g = {};
+  rows.forEach(r => { if (r.mg) (g[r.mg] ??= []).push(r); });
+  return Object.entries(g).map(([id, rs]) => {
+    if (one) { const best = {}; rs.forEach(r => { const b = best[r.id]; if (!b || (r.aum||0) > (b.aum||0)) best[r.id] = r; }); rs = Object.values(best); }
+    rs.sort(mSort === "ret" ? (a,b) => (b[mP] ?? -1e9) - (a[mP] ?? -1e9) || (a.ter ?? 99) - (b.ter ?? 99)
+                            : (a,b) => (a.ter ?? 99) - (b.ter ?? 99) || (b.aum||0) - (a.aum||0));
+    return {id, name: MASTERS[id] || "", rs, funds: new Set(rs.map(r => r.id)).size, aum: rs.reduce((s,r) => s + (r.aum||0), 0)};
+  }).filter(x => x.funds >= 2).sort((a,b) => b.funds - a.funds || b.aum - a.aum);
+}
+const hpill = r => r.hedge ? `<span class="hpill ${r.hedge}">${r.hedge}</span>` : '<span class="flat">–</span>';
+const HEDGES = ["Unhedged","Hedged","Dynamic"];
+
+function masterCard(g){
+  const s = mstate[g.id] ||= {h: "", all: false};
+  const rs = s.h ? g.rs.filter(r => r.hedge === s.h) : g.rs;
+  const ters = g.rs.map(r => r.ter).filter(v => v != null), cheap = g.rs.find(r => r.ter != null);
+  const lo = ters.length ? Math.min(...ters) : null, hi = ters.length ? Math.max(...ters) : null;
+  const byH = HEDGES.map(hh => { const x = g.rs.filter(r => r.hedge === hh); const v = x.map(r => r[mP]).filter(y => y != null);
+    return {hh, n: x.length, k: v.length, med: median(v), lo: v.length ? Math.min(...v) : null, hi: v.length ? Math.max(...v) : null}; }).filter(x => x.n);
+  const gap10 = lo == null ? null : 100000 * (1 - (1 - (hi - lo) / 100) ** 10);
+  const list = s.all ? rs : rs.slice(0, 6);
+  return `<section class="panel mcard" data-g="${g.id}">
+    <div class="phead"><h3>${esc(g.name)}</h3><span class="sub">${g.funds} Thai funds · ${new Set(g.rs.map(r => r.amc)).size} companies · ${fmtAum(g.aum)} THB</span>
+      <button class="go sm" data-cmpg="${g.id}">Compare top ${Math.min(10, rs.length)}${s.h ? " " + s.h.toLowerCase() : ""} →</button></div>
+    <div class="mstats">
+      <div><span class="lbl">Total expense (TER)</span><b>${lo == null ? "–" : `${lo.toFixed(2)}–${hi.toFixed(2)}%`}</b><span class="sub">cheapest: ${cheap ? esc(cheap.name) : "–"}</span></div>
+      <div><span class="lbl">Fee gap</span><b>${lo == null ? "–" : (hi - lo).toFixed(2) + " pts"}</b><span class="sub">${lo == null ? "" : `฿${Math.round((hi - lo) * 1000).toLocaleString()} a year, about ฿${Math.round(gap10).toLocaleString()} over 10 years, on ฿100,000`}</span></div>
+      ${byH.map(x => `<div><span class="lbl">${mP === "y1" ? "1-year return" : mP.slice(1) + "-year return p.a."} · ${x.hh}</span><b>${fmtPct(x.med)}</b><span class="sub">${x.k ? `median of ${x.k}${x.k < x.n ? ` (${x.n - x.k} too new)` : ""}${x.k > 1 ? ` · ${x.lo.toFixed(1)} to ${x.hi.toFixed(1)}%` : ""}` : `${x.n} fund${x.n > 1 ? "s" : ""}, none ${MPER[mP]} old`}</span></div>`).join("")}
+    </div>
+    ${byH.length > 1 ? `<div class="chips hchips"><button class="chip" data-h="" aria-pressed="${!s.h}">All ${g.rs.length}</button>${byH.map(x => `<button class="chip" data-h="${x.hh}" aria-pressed="${s.h === x.hh}">${x.hh} ${x.n}</button>`).join("")}</div>` : ""}
+    <div class="ftwrap"><table class="ftable mtab"><thead><tr><th>Fund</th><th>Company</th><th>Hedging</th><th>TER</th><th>1Y</th><th>3Y p.a.</th><th>5Y p.a.</th><th>10Y p.a.</th><th>Net assets</th></tr></thead><tbody>
+      ${list.map(r => `<tr data-k="${esc(r.key)}">${nameCell(r)}<td class="l sub">${esc(r.amc)}</td><td>${hpill(r)}</td><td class="num">${fmtFee(r.ter)}</td>
+        <td class="num">${fmtPct(r.y1)}</td><td class="num">${fmtLT(r, "y3")}</td><td class="num">${fmtLT(r, "y5")}</td><td class="num">${fmtLT(r, "y10")}</td><td class="num">${fmtAum(r.aum)}</td></tr>`).join("")}
+    </tbody></table></div>
+    ${rs.length > 6 ? `<button class="reset" data-all>${s.all ? "Show fewer" : `Show all ${rs.length}`}</button>` : ""}
+  </section>`;
+}
+
+const MT_ORDER = ["Gold & commodities","Technology","Healthcare","Clean energy & climate","Property & infrastructure","Private & alternative assets",
+  "US equity","Global equity","Europe equity","Japan equity","China equity","India equity","Asia & emerging markets","Multi-asset","Bonds & income"];
+const MT_NAME = [
+  ["Gold & commodities", /gold|silver|precious|metal|miner|mining|\boil\b|commodit|natural resource/i],
+  ["Clean energy & climate", /clean|climate|sustainable energy|renewable|smart grid|positive change|energy transition|hydrogen|\bwater\b/i],
+  ["Healthcare", /health|life science|biotech|medical|pharma|genom/i],
+  ["Technology", /tech|semiconductor|digital|innovat|robot|artificial intelligence|\bai\b|cyber|cloud|internet|nasdaq|space|fintech|blockchain|disrupt/i],
+  ["Property & infrastructure", /real estate|reit|property|infrastructure/i],
+  ["Private & alternative assets", /private|hedge fund|alternative|absolute return|strategic income offshore/i],
+];
+const MT_REGION = {US:"US equity", China:"China equity", Japan:"Japan equity", India:"India equity", Europe:"Europe equity",
+  Vietnam:"Asia & emerging markets", ASEAN:"Asia & emerging markets", Asia:"Asia & emerging markets", "Emerging Markets":"Asia & emerging markets",
+  Korea:"Asia & emerging markets", Taiwan:"Asia & emerging markets", "Latin America":"Asia & emerging markets"};
+function masterTheme(g){
+  const hit = MT_NAME.find(([, rx]) => rx.test(g.name)); if (hit) return hit[0];
+  const c = {};
+  g.rs.forEach(r => { const t = r.theme === "Gold" ? "Gold & commodities" : r.theme === "Technology" ? "Technology" : r.theme === "Healthcare" ? "Healthcare"
+    : r.cat === "Fixed Income" ? "Bonds & income" : r.cat === "Mixed" ? "Multi-asset" : r.cat === "Alternative" ? "Private & alternative assets"
+    : MT_REGION[r.region] || "Global equity"; c[t] = (c[t] || 0) + 1; });
+  return Object.entries(c).sort((a,b) => b[1] - a[1])[0][0];
+}
+const medOf = g => median(g.rs.map(r => r[mP]));
+const perLbl = () => mP === "y1" ? "1-year return" : `${mP.slice(1)}-year return p.a.`;
+
+function masterItem(g){
+  const open = mOpen.has(g.id), ters = g.rs.map(r => r.ter).filter(v => v != null);
+  const hs = [...new Set(g.rs.map(r => r.hedge).filter(Boolean))];
+  return `<div class="mitem${open ? " open" : ""}" data-item="${g.id}">
+    <button class="mrow" data-open="${g.id}" aria-expanded="${open}">
+      <span style="min-width:0"><b>${esc(g.name)}</b><span class="sub">${g.funds} Thai funds · ${new Set(g.rs.map(r => r.amc)).size} companies${ters.length ? ` · TER ${Math.min(...ters).toFixed(2)}–${Math.max(...ters).toFixed(2)}%` : ""}${hs.length ? " · " + hs.join(", ") : ""}</span></span>
+      <span class="mret"><span class="lbl">median, ${mP.slice(1)}Y${mP !== "y1" ? " p.a." : ""}</span>${fmtPct(medOf(g))}</span>
+      <span class="chev" aria-hidden="true">›</span>
+    </button>
+    ${open ? masterCard(g) : ""}
+  </div>`;
+}
+
+function renderMasters(){
+  const groups = masterGroups(view, st.one !== false);
+  groups.forEach(g => { g.theme = masterTheme(g); });
+  renderMasters.groups = groups;
+  document.querySelectorAll("#mPer [data-mp]").forEach(b => b.setAttribute("aria-pressed", b.dataset.mp === mP));
+  document.querySelectorAll("#mSortT [data-ms]").forEach(b => { b.setAttribute("aria-pressed", b.dataset.ms === mSort); if (b.dataset.ms === "ret") b.textContent = `Best ${mP.slice(1)}Y return first`; });
+  const filtered = st.q||st.amc||st.pick||st.region||st.type||st.cat||st.tax;
+  $("#mIntro").textContent = `${groups.length} master funds have two or more Thai feeder funds${filtered ? " matching your filters" : ""}. They hold the same portfolio, so what differs is the Thai fund's fees, its currency hedging and its dividend policy.`;
+  const tiles = MT_ORDER.map(t => { const gs = groups.filter(g => g.theme === t);
+    return {t, n: gs.length, f: gs.reduce((s,g) => s + g.funds, 0), med: median(gs.flatMap(g => g.rs.map(r => r[mP])))}; }).filter(x => x.n);
+  if (mTheme && !tiles.some(x => x.t === mTheme)) mTheme = "";
+  $("#mThemes").innerHTML = tiles.map(x => `<button class="mtile" data-mt="${esc(x.t)}" aria-pressed="${x.t === mTheme && !mQuery}">
+    <b>${esc(x.t)}</b><span class="sub">${x.n} master fund${x.n > 1 ? "s" : ""} · ${x.f} Thai funds</span>
+    <span class="num">${fmtPct(x.med)}</span><span class="sub">median ${perLbl().replace("return", "return,")}</span></button>`).join("");
+  const q = mQuery.trim().toLowerCase();
+  let list, head;
+  if (q) {
+    list = groups.filter(g => g.name.toLowerCase().includes(q) || g.theme.toLowerCase().includes(q) || g.rs.some(r => r.hay.includes(q)));
+    head = `<h4>${list.length} master fund${list.length === 1 ? "" : "s"} match “${esc(mQuery.trim())}”</h4><span class="sub">Searches master fund names and the Thai funds that invest in them</span>`;
+  } else if (mTheme) {
+    list = groups.filter(g => g.theme === mTheme);
+    head = `<h4>${esc(mTheme)}</h4><span class="sub">${list.length} master funds · tap one to see and compare its Thai feeder funds</span><button class="reset" data-mt="">Back to most used</button>`;
+  } else {
+    list = groups.slice(0, 8);
+    head = `<h4>Most used master funds</h4><span class="sub">Choose a theme above, or search, to see the rest</span>`;
+  }
+  if (mSort === "ret") list = list.slice().sort((a,b) => (medOf(b) ?? -1e9) - (medOf(a) ?? -1e9));
+  if (list.length === 1) mOpen.add(list[0].id);
+  $("#mBody").innerHTML = `<div class="mhead">${head}</div>` +
+    (list.map(masterItem).join("") || '<div class="panel"><div class="sub">No master fund matches. Try a shorter word, or clear the filters above.</div></div>');
+}
+
+function bindMasters(){
+  $("#mSearch").addEventListener("input", e => { mQuery = e.target.value; mOpen.clear(); if (mQuery) mTheme = ""; renderMasters(); });
+  $("#masterList").addEventListener("click", e => {
+    const card = e.target.closest(".mcard"), g = card && renderMasters.groups.find(x => x.id === card.dataset.g);
+    const mp = e.target.closest("[data-mp]"); if (mp) { mP = mp.dataset.mp; renderMasters(); return; }
+    const ms = e.target.closest("[data-ms]"); if (ms) { mSort = ms.dataset.ms; renderMasters(); return; }
+    const mt = e.target.closest("[data-mt]");
+    if (mt) { mTheme = mTheme === mt.dataset.mt ? "" : mt.dataset.mt; mQuery = ""; $("#mSearch").value = ""; mOpen.clear(); renderMasters();
+      if (mTheme) $("#mBody").scrollIntoView({behavior: "smooth", block: "start"}); return; }
+    const op = e.target.closest("[data-open]");
+    if (op) { const id = op.dataset.open; mOpen.has(id) ? mOpen.delete(id) : mOpen.add(id);
+      const g = renderMasters.groups.find(x => x.id === id), item = op.closest(".mitem"); if (g && item) item.outerHTML = masterItem(g); return; }
+    if (!g) return;
+    const s = mstate[g.id] ||= {h: "", all: false};
+    const tr = e.target.closest("tr[data-k]"), r = tr && all.find(x => x.key === tr.dataset.k);
+    if (r && e.target.closest(".cmpb")) { toggleCmp(r); return; }
+    if (r && e.target.closest(".star")) { watch.has(r.key) ? watch.delete(r.key) : watch.add(r.key); store.set("watch", [...watch]); e.target.setAttribute("aria-pressed", watch.has(r.key)); return; }
+    if (r) { goFund(r); return; }
+    const hb = e.target.closest("[data-h]");
+    if (hb) { s.h = hb.dataset.h; s.all = false; card.outerHTML = masterCard(g); return; }
+    if (e.target.closest("[data-all]")) { s.all = !s.all; card.outerHTML = masterCard(g); return; }
+    if (e.target.closest("[data-cmpg]")) { const rows = (s.h ? g.rs.filter(x => x.hedge === s.h) : g.rs).slice(0, 10); if (rows.length >= 2) navTo(cmpHash(rows)); }
+  });
 }
 
 function divCal(){
@@ -539,6 +745,7 @@ function render(){
         <td class="num">${fmtNav(r.nav)}</td>
         <td class="num">${fmtPct(r.d1)}</td><td class="num">${fmtPct(r.m1)}</td><td class="num">${fmtPct(r.m3)}</td>
         <td class="num">${fmtPct(r.ytd)}</td><td class="num">${fmtPct(r.y1)}</td>
+        ${LONGK.map(k => `<td class="num">${fmtLT(r, k)}</td>`).join("")}
         <td class="num">${fmtYld(r.yld)}</td><td class="num">${fmtAum(r.aum)}</td></tr>`).join("");
   $("#empty").hidden = view.length > 0;
   $("#more").hidden = view.length <= shown;
@@ -547,6 +754,21 @@ function render(){
 
 /* ---------- fund page ---------- */
 const cache = {};
+const PERIOD_DAYS = {"1M":30,"3M":91,"6M":182,"1Y":365,"3Y":1096,"5Y":1826,"7Y":2557,"10Y":3653};
+function xTicks(t0, t1, narrow){
+  const maxT = narrow ? 4 : 8, yrs = (t1 - t0) / 3.156e10; let xt = [];
+  if (yrs > 2.5) {
+    const ya = new Date(t0).getUTCFullYear() + 1, yb = new Date(t1).getUTCFullYear(), k = Math.ceil((yb - ya + 1) / maxT);
+    for (let y = ya; y <= yb; y += k) xt.push([Date.UTC(y, 0, 1), String(y)]);
+  } else {
+    const d0 = new Date(t0);
+    for (let y = d0.getUTCFullYear(), m = d0.getUTCMonth() + 1; Date.UTC(y, m, 1) <= t1; m++) { if (m > 11) { m = 0; y++; } const t = Date.UTC(y, m, 1); if (t > t0) xt.push([t, m, y]); }
+    if (xt.length > maxT) { const k = Math.ceil(xt.length / maxT); xt = xt.filter((_, i) => i % k === 0); }
+    xt = xt.map(([t, m, y], i) => [t, `${MONTHS[m]}${m === 0 || i === 0 ? " " + String(y).slice(2) : ""}`]);
+  }
+  if (xt.length < 2) xt = [.2, .5, .8].map(f => { const t = t0 + (t1 - t0) * f, d = new Date(t); return [t, `${d.getUTCDate()} ${MONTHS[d.getUTCMonth()]}`]; });
+  return xt;
+}
 const MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
 const slugOf = r => "f-" + (r.id + "-" + r.cls).replace(/[^A-Za-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
 const isoMinus = (d, n) => new Date(Date.parse(d) - n*864e5).toISOString().slice(0,10);
@@ -645,7 +867,7 @@ async function showFund(r){
   <section class="panel">
     <div class="phead"><h3 id="chartTitle">NAV per unit</h3>
       <div class="tabs" id="cMode"><button data-m="nav" aria-pressed="${chartState.m==="nav"}">NAV</button>${r.dn ? `<button data-m="tr" aria-pressed="${chartState.m==="tr"}">With dividends</button>` : ""}<button data-m="aum" aria-pressed="${chartState.m==="aum"}">Net assets</button></div>
-      <div class="tabs" id="cPeriod">${["1M","3M","6M","YTD","1Y","All"].map(p => `<button data-p="${p}" aria-pressed="${p===chartState.p}">${p}</button>`).join("")}</div></div>
+      <div class="tabs" id="cPeriod">${["1M","3M","6M","YTD","1Y","3Y","5Y","7Y","10Y","All"].map(p => `<button data-p="${p}" aria-pressed="${p===chartState.p}">${p}</button>`).join("")}</div></div>
     <div class="chartbox" id="bigChart"><div class="sub">Loading price history…</div></div>
     <div class="readout" id="readout"></div>
   </section>
@@ -653,7 +875,8 @@ async function showFund(r){
   <div class="cols">
     <section class="panel">
       <h3>Returns</h3>
-      <div class="trail">${[["1 week","w1"],["1 month","m1"],["3 months","m3"],["6 months","m6"],["YTD","ytd"],["1 year","y1"]].map(([l,k]) => `<div><div class="lbl">${l}</div><div class="num">${fmtPct(r[k])}</div></div>`).join("")}</div>
+      <div class="trail">${[["1 week","w1"],["1 month","m1"],["3 months","m3"],["6 months","m6"],["YTD","ytd"],["1 year","y1"],["3 years p.a.","y3"],["5 years p.a.","y5"],["7 years p.a.","y7"],["10 years p.a.","y10"]].map(([l,k]) => `<div><div class="lbl">${l}</div><div class="num">${LONGK.includes(k) ? fmtLT(r, k) : fmtPct(r[k])}</div></div>`).join("")}</div>
+      <div class="sub">From daily NAV${st.tr ? ", dividends added back" : ", price only"}. 3 years and longer are compound returns a year.${r.fsl && st.tr ? " † Official factsheet figure: the SEC dividend record for this fund is incomplete." : ""}</div>
       ${r.asof ? `<div class="lbl">Official factsheet · as of ${thDate(r.asof)}</div>
       <div class="ftwrap"><table class="ftable"><thead><tr><th></th><th>YTD</th><th>1Y</th><th>3Y p.a.</th><th>5Y p.a.</th><th>10Y p.a.</th></tr></thead><tbody>
       ${[["Fund","r"],["Benchmark","bm"],["Peer average","peer"]].map(([l,p]) => `<tr><td>${l}</td>${["ytd","1y","3y","5y","10y"].map(q => `<td class="num">${fmtPct(r[p+q])}</td>`).join("")}</tr>`).join("")}
@@ -695,6 +918,18 @@ async function showFund(r){
       <div class="sub">As reported to the SEC. Some funds and years are missing from the SEC record${r.dpol === "Y" && !r.dn ? ", including this one" : ""}.</div>` : `<div class="sub">No dividends on record.</div>`}
     </section>
 
+    ${r.mg ? (() => { const g = masterGroups(all.filter(x => x.mg === r.mg && (x.id !== r.id || x === r)), true)[0]; if (!g) return "";
+      const others = g.rs.filter(x => x !== r), pick = [r, ...others.filter(x => x.hedge === r.hedge), ...others.filter(x => x.hedge !== r.hedge)].slice(0, 10);
+      return `<section class="panel wide">
+      <div class="phead"><h3>Same master fund</h3><span class="sub">${g.funds} Thai funds invest in ${esc(MASTERS[r.mg])}. Same portfolio underneath, so compare fees and currency hedging.</span>
+        <button class="go sm" id="cmpMaster" style="margin-left:auto">Compare ${pick.length} →</button></div>
+      <div class="ftwrap"><table class="ftable mtab"><thead><tr><th>Fund</th><th>Company</th><th>Hedging</th><th>TER</th><th>1Y</th><th>3Y p.a.</th><th>5Y p.a.</th><th>10Y p.a.</th><th>Net assets</th></tr></thead><tbody id="masterRows">
+        ${g.rs.map(x => `<tr data-s="${slugOf(x)}" ${x === r ? 'aria-current="true"' : ""}><td><b>${esc(x.name)}</b>${x.tax ? `<span class="tag">${x.tax}</span>` : ""}</td><td class="sub">${esc(x.amc)}</td><td>${hpill(x)}</td>
+          <td class="num">${fmtFee(x.ter)}</td><td class="num">${fmtPct(x.y1)}</td><td class="num">${fmtLT(x, "y3")}</td><td class="num">${fmtLT(x, "y5")}</td><td class="num">${fmtLT(x, "y10")}</td><td class="num">${fmtAum(x.aum)}</td></tr>`).join("")}
+      </tbody></table></div>
+      <div class="sub">Sorted by total expense, lowest first. "Compare" picks this fund plus the cheapest others, same hedging first.</div>
+    </section>`; })() : ""}
+
     ${classes.length > 1 ? `<section class="panel wide">
       <h3>Share classes</h3>
       <div class="ftwrap"><table class="ftable ctable"><thead><tr><th>Class</th><th>For</th><th>NAV</th><th>1D</th><th>1Y</th><th>TER</th><th>Net assets</th></tr></thead>
@@ -723,6 +958,9 @@ async function showFund(r){
     $("#cPeriod").querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x === b)); drawBig(); };
   $("#cMode").onclick = e => { const b = e.target.closest("button"); if (!b) return; chartState.m = b.dataset.m;
     $("#cMode").querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x === b)); drawBig(); };
+  const mr = $("#masterRows"); if (mr) mr.onclick = e => { const tr = e.target.closest("tr[data-s]"); if (tr) location.hash = tr.dataset.s; };
+  const cm = $("#cmpMaster"); if (cm) cm.onclick = () => { const g = masterGroups(all.filter(x => x.mg === r.mg && (x.id !== r.id || x === r)), true)[0];
+    const others = g.rs.filter(x => x !== r); navTo(cmpHash([r, ...others.filter(x => x.hedge === r.hedge), ...others.filter(x => x.hedge !== r.hedge)].slice(0, 10))); };
   const cr = $("#classRows"); if (cr) cr.onclick = e => { const tr = e.target.closest("tr[data-s]"); if (tr) location.hash = tr.dataset.s; };
   about(r, {});
 
@@ -755,6 +993,7 @@ function about(r, info){
     ["Theme / region", `${esc(r.theme || "–")} · ${esc(r.region || "–")}`],
     r.types.length && ["Fund type", esc(r.types.join(", "))],
     r.master && ["Master fund", esc(r.master) + (info.master_country ? ` · ${esc(info.master_country)}` : "")],
+    r.hedge && ["This class hedges", esc(r.hedge)],
     info.fx && r.region !== "Thailand" && ["Currency hedging", esc(info.fx)],
     ci.who && ["Class is for", esc(ci.who)],
     ci.isin && ["ISIN", `<span class="num">${esc(ci.isin)}</span>`],
@@ -803,7 +1042,7 @@ function drawBig(){
   if (s.length < 2) { box.innerHTML = '<div class="sub">No net-asset history for this class.</div>'; $("#readout").innerHTML = ""; return; }
   const last = s.at(-1)[0];
   if (p !== "All") {
-    const cut = p === "YTD" ? `${+last.slice(0,4) - 1}-12-31` : isoMinus(last, {"1M":30,"3M":91,"6M":182,"1Y":365}[p]);
+    const cut = p === "YTD" ? `${+last.slice(0,4) - 1}-12-31` : isoMinus(last, PERIOD_DAYS[p]);
     const i = s.findIndex(x => x[0] > cut); s = i === -1 ? s.slice(-1) : s.slice(Math.max(0, i - 1));
   }
   if (s.length < 2) { box.innerHTML = '<div class="sub">Not enough history for this period.</div>'; $("#readout").innerHTML = ""; return; }
@@ -817,12 +1056,7 @@ function drawBig(){
   const chg = vals.at(-1) / vals[0] - 1, col = nav ? (chg >= 0 ? "var(--up)" : "var(--down)") : "var(--accent)";
   const {ticks, dp} = niceTicks(y0, y1, Wd < 560 ? 3 : 4);
   const fmtV = v => nav ? v.toFixed(4) : v.toFixed(2) + " bn";
-  // x ticks: month starts, thinned to fit
-  let xt = []; const d0 = new Date(t0), d1 = new Date(t1);
-  for (let y = d0.getUTCFullYear(), m = d0.getUTCMonth() + 1; Date.UTC(y, m, 1) <= t1; m++) { if (m > 11) { m = 0; y++; } const t = Date.UTC(y, m, 1); if (t > t0 && t <= t1) xt.push([t, `${MONTHS[m]}${m === 0 || !xt.length ? " " + String(y).slice(2) : ""}`]); }
-  const maxT = Wd < 560 ? 4 : 8;
-  if (xt.length < 2) xt = [0, .33, .66].map(f => { const t = t0 + (t1 - t0) * f; const d = new Date(t); return [t, `${d.getUTCDate()} ${MONTHS[d.getUTCMonth()]}`]; });
-  else if (xt.length > maxT) { const k = Math.ceil(xt.length / maxT); xt = xt.filter((_, i) => i % k === 0); }
+  const xt = xTicks(t0, t1, Wd < 560).filter(([t]) => X(t) > L + 22 && X(t) < Wd - 40);
   box.innerHTML = `<svg viewBox="0 0 ${Wd} ${H}" width="${Wd}" height="${H}" role="img" aria-label="${nav ? "NAV" : "Net assets"} over ${p}">
     ${ticks.map(t => `<line x1="${L}" x2="${Wd - R}" y1="${Y(t).toFixed(1)}" y2="${Y(t).toFixed(1)}" stroke="var(--line)"/><text x="${Wd - R + 8}" y="${(Y(t) + 4).toFixed(1)}" font-size="11" fill="var(--muted)" font-family="IBM Plex Mono,monospace">${t.toFixed(dp)}</text>`).join("")}
     ${xt.map(([t, l]) => `<line x1="${X(t).toFixed(1)}" x2="${X(t).toFixed(1)}" y1="${H - B}" y2="${H - B + 4}" stroke="var(--muted)"/><text x="${X(t).toFixed(1)}" y="${H - 8}" font-size="11" fill="var(--muted)" text-anchor="middle">${l}</text>`).join("")}
@@ -979,10 +1213,12 @@ async function showCompare(rows){
     <div class="addbox"><label class="search"><span aria-hidden="true">＋</span><input id="cmpAdd" type="search" placeholder="Add a fund to compare" autocomplete="off" ${rows.length >= MAXC ? "disabled" : ""}></label><div class="addres" id="addRes" hidden></div></div>
   </header>
   <div class="legend" id="legend">${rows.map((r, i) => `<span class="tchip" data-i="${i}"><i style="background:var(--c${i})"></i><a href="#${slugOf(r)}">${esc(shortName(r))}</a><button data-rm="${esc(r.key)}" aria-label="Remove ${esc(shortName(r))}">×</button></span>`).join("")}</div>
+  ${rows.length >= 2 && rows[0].mg && rows.every(x => x.mg === rows[0].mg) ? (() => { const t = rows.map(x => x.ter).filter(v => v != null);
+    return `<section class="panel cmpnote"><div class="sub">All ${rows.length} funds invest in the same master fund, <b>${esc(MASTERS[rows[0].mg])}</b>. Their portfolios are the same, so differences in return come from the Thai fund's fees${t.length > 1 ? ` (TER ${Math.min(...t).toFixed(2)}–${Math.max(...t).toFixed(2)}% a year)` : ""}, currency hedging (${[...new Set(rows.map(x => x.hedge || "not stated"))].join(", ")}) and dividend policy.</div></section>`; })() : ""}
   ${rows.length < 2 ? `<div class="panel"><div class="sub">Add at least one more fund to compare.</div></div>` : `
   <section class="panel">
     <div class="phead"><h3>Performance</h3><span class="sub">% change from the start of the period${st.tr ? ", dividends added back" : ""}</span>
-      <div class="tabs" id="ccPeriod">${["1M","3M","6M","YTD","1Y","All"].map(p => `<button data-p="${p}" aria-pressed="${p === cmpP}">${p}</button>`).join("")}</div></div>
+      <div class="tabs" id="ccPeriod">${["1M","3M","6M","YTD","1Y","3Y","5Y","7Y","10Y","All"].map(p => `<button data-p="${p}" aria-pressed="${p === cmpP}">${p}</button>`).join("")}</div></div>
     <div class="chartbox" id="cChart"><div class="sub">Loading price history…</div></div>
   </section>
   <section class="panel">
@@ -1039,6 +1275,7 @@ function cmpTable(rows, sc, {stats = [], info = []}){
     [st.tr ? "Returns from daily NAV, with dividends" : "Returns from daily NAV"],
     ["1 month", r => r.m1, fmtPct, 1], ["3 months", r => r.m3, fmtPct, 1], ["6 months", r => r.m6, fmtPct, 1],
     ["Year to date", r => r.ytd, fmtPct, 1], ["1 year", r => r.y1, fmtPct, 1],
+    ...LONGK.map(k => [`${k.slice(1)} years, a year`, r => r[k], (v, r) => fmtLT(r, k), 1]),
     ["Factsheet returns, a year"],
     ["3 years", r => r.r3y, fmtPct, 1], ["5 years", r => r.r5y, fmtPct, 1], ["10 years", r => r.r10y, fmtPct, 1],
     ["3Y vs benchmark", r => r.r3y != null && r.bm3y != null ? r.r3y - r.bm3y : null, fmtPct, 1],
@@ -1070,6 +1307,7 @@ function cmpTable(rows, sc, {stats = [], info = []}){
     ["Fund type", r => r.types.join(", ") || null, esc],
     ["Tax-saving", r => r.tax || null, esc],
     ["Master fund", r => r.master || null, esc],
+    ["Currency hedging", r => r.hedge || null, esc],
     ["Launched", (r, i) => age(i), v => v],
   ];
   const head = `<tr><th class="mcol"></th>${rows.map((r, i) => `<th class="fcol"><span class="sw" style="background:var(--c${i})"></span><a href="#${slugOf(r)}">${esc(shortName(r))}</a><span class="sub">${esc(r.amc)}</span></th>`).join("")}</tr>`;
@@ -1079,7 +1317,7 @@ function cmpTable(rows, sc, {stats = [], info = []}){
     let bestI = -1;
     if (dir) { const nums = vals.map(v => v == null || v === "" ? null : +v); const ok = nums.filter(v => v != null && isFinite(v));
       if (ok.length >= 2 && Math.max(...ok) !== Math.min(...ok)) { const t = dir > 0 ? Math.max(...ok) : Math.min(...ok); bestI = nums.indexOf(t); } }
-    return `<tr><th class="mcol">${label}</th>${vals.map((v, i) => `<td class="${dir || fmt === fmtNav ? "num" : ""}${i === bestI ? " best" : ""}">${v == null || v === "" ? '<span class="flat">–</span>' : fmt(v)}</td>`).join("")}</tr>`;
+    return `<tr><th class="mcol">${label}</th>${vals.map((v, i) => `<td class="${dir || fmt === fmtNav ? "num" : ""}${i === bestI ? " best" : ""}">${v == null || v === "" ? (fmt.length === 2 ? fmt(v, rows[i]) : '<span class="flat">–</span>') : fmt(v, rows[i])}</td>`).join("")}</tr>`;
   }).join("");
   $("#cTable").innerHTML = `<table class="ctab"><thead>${head}</thead><tbody>${body}</tbody></table>`;
 }
@@ -1089,7 +1327,7 @@ function drawCompare(){
   const {rows, series} = cmpData;
   const lastAll = series.reduce((m, s) => s.length && s.at(-1)[0] > m ? s.at(-1)[0] : m, "");
   if (!lastAll) { box.innerHTML = '<div class="sub">Price history is not included in this preview for these funds. The live site has it for every fund.</div>'; return; }
-  const cut = cmpP === "All" ? "" : cmpP === "YTD" ? `${+lastAll.slice(0,4) - 1}-12-31` : isoMinus(lastAll, {"1M":30,"3M":91,"6M":182,"1Y":365}[cmpP]);
+  const cut = cmpP === "All" ? "" : cmpP === "YTD" ? `${+lastAll.slice(0,4) - 1}-12-31` : isoMinus(lastAll, PERIOD_DAYS[cmpP]);
   // common start: the latest first-date among funds, so every line starts at 0% together
   let start = cut;
   series.forEach(s => { if (s.length && s[0][0] > start) start = s[0][0]; });
@@ -1107,11 +1345,7 @@ function drawCompare(){
   const y0 = lo - pad, y1 = hi + pad;
   const X = t => L + (t - t0) / Math.max(1, t1 - t0) * (Wd - L - Rr), Y = v => T + (y1 - v) * (H - T - B) / (y1 - y0);
   const {ticks, dp} = niceTicks(y0, y1, Wd < 560 ? 4 : 5);
-  let xt = []; const d0 = new Date(t0);
-  for (let y = d0.getUTCFullYear(), m = d0.getUTCMonth() + 1; Date.UTC(y, m, 1) <= t1; m++) { if (m > 11) { m = 0; y++; } const t = Date.UTC(y, m, 1); if (t > t0 && t <= t1) xt.push([t, `${MONTHS[m]}${m === 0 || !xt.length ? " " + String(y).slice(2) : ""}`]); }
-  const maxT = Wd < 560 ? 4 : 8;
-  if (xt.length < 2) xt = [0, .33, .66].map(f => { const t = t0 + (t1 - t0) * f; const d = new Date(t); return [t, `${d.getUTCDate()} ${MONTHS[d.getUTCMonth()]}`]; });
-  else if (xt.length > maxT) { const k = Math.ceil(xt.length / maxT); xt = xt.filter((_, i) => i % k === 0); }
+  const xt = xTicks(t0, t1, Wd < 560).filter(([t]) => X(t) > L + 22 && X(t) < Wd - 40);
   box.innerHTML = `<svg viewBox="0 0 ${Wd} ${H}" width="${Wd}" height="${H}" role="img" aria-label="Performance comparison ${cmpP}">
     ${ticks.map(t => `<line x1="${L}" x2="${Wd - Rr}" y1="${Y(t).toFixed(1)}" y2="${Y(t).toFixed(1)}" stroke="var(--line)" ${t === 0 ? 'stroke-width="1.5" stroke="var(--muted)"' : ""}/><text x="${Wd - Rr + 8}" y="${(Y(t) + 4).toFixed(1)}" font-size="11" fill="var(--muted)" font-family="IBM Plex Mono,monospace">${t > 0 ? "+" : ""}${t.toFixed(dp)}%</text>`).join("")}
     ${xt.map(([t, l]) => `<text x="${X(t).toFixed(1)}" y="${H - 8}" font-size="11" fill="var(--muted)" text-anchor="middle">${l}</text>`).join("")}
@@ -1150,11 +1384,11 @@ function scatter(rows, stats){
   const xstep = xr.ticks.length > 1 ? xr.ticks[1] - xr.ticks[0] : Math.max(...xs);
   while (xr.ticks.at(-1) < Math.max(...xs) * 1.05) xr.ticks.push(+(xr.ticks.at(-1) + xstep).toFixed(10));
   const x0 = 0, x1 = xr.ticks.at(-1), y0 = Math.min(yLo - yp, yr.ticks[0]), y1 = Math.max(yHi + yp, yr.ticks.at(-1));
+  const X = v => L + (v - x0) / (x1 - x0) * (Wd - L - R), Y = v => T + (y1 - v) / (y1 - y0) * (H - T - B);
   const placed = [], lab = pts.map(p => { const right = X(p.x) > Wd * .7, x = X(p.x) + (right ? -10 : 10); let y = Y(p.y) + 4;
     const w = shortName(rows[p.i]).length * 6.5, l = right ? x - w : x;
     for (let k = 0; k < 12 && placed.some(q => l < q.r && l + w > q.l && Math.abs(q.y - y) < 13); k++) y += 13;
     placed.push({l, r: l + w, y}); return {x, y, right}; });
-  const X = v => L + (v - x0) / (x1 - x0) * (Wd - L - R), Y = v => T + (y1 - v) / (y1 - y0) * (H - T - B);
   box.innerHTML = `<svg viewBox="0 0 ${Wd} ${H}" width="${Wd}" height="${H}" role="img" aria-label="1-year return against volatility">
     ${yr.ticks.map(t => `<line x1="${L}" x2="${Wd - R}" y1="${Y(t).toFixed(1)}" y2="${Y(t).toFixed(1)}" stroke="var(--line)" ${t === 0 ? 'stroke="var(--muted)"' : ""}/><text x="${L - 6}" y="${(Y(t) + 4).toFixed(1)}" font-size="11" fill="var(--muted)" text-anchor="end">${t.toFixed(yr.dp)}%</text>`).join("")}
     ${xr.ticks.map(t => `<text x="${X(t).toFixed(1)}" y="${H - 16}" font-size="11" fill="var(--muted)" text-anchor="middle">${t.toFixed(xr.dp)}%</text>`).join("")}

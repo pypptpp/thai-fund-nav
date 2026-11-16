@@ -67,6 +67,8 @@ You do **not** need to rent a server or a database.
 
 - **เงินปันผล**: ปฏิทินกองทุนที่จะปิดสมุดทะเบียน/จ่ายปันผลเร็ว ๆ นี้, คอลัมน์ Yield 12 เดือน, ตัวกรอง "Pays dividends", และสวิตช์ "Returns include dividends" (บวกเงินปันผลกลับเข้าไปในผลตอบแทน — เปิดไว้เป็นค่าเริ่มต้น) หน้ากองทุนแสดงประวัติการจ่ายปันผลรายปีและรายครั้ง
 
+- **Same master fund**: แท็บที่ 3 รวมกองทุนไทยที่ลงทุนในกองทุนหลัก (master fund) ตัวเดียวกัน — เทียบ TER, การป้องกันความเสี่ยงค่าเงิน (Unhedged / Hedged / Dynamic) และผลตอบแทน กด "Compare" เพื่อเปรียบเทียบได้ทันที หน้ากองทุนแต่ละกองก็มีส่วน "Same master fund" เช่นกัน
+
 ## ถ้ามีปัญหา
 | อาการ | วิธีแก้ |
 |---|---|
@@ -80,6 +82,7 @@ You do **not** need to rent a server or a database.
 - `update.py fetch` calls `GET https://api.sec.or.th/v2/fund/daily-info/nav?start_nav_date=…&end_nav_date=…` (header `Ocp-Apim-Subscription-Key`), pages with `next_cursor` (100 rows/page), and writes one file per NAV date to `data/daily/`. It also refreshes the active fund list from `/v2/fund/general-info/profiles?fund_status=Registered|IPO`.
 - Fees, factsheet returns, peer averages, volatility and risk level come from `/v2/fund/factsheet/fees`, `/factsheet/performance` and `/factsheet/risk-spectrum`, refreshed weekly into `data/factsheet.json` (about 7,500 calls; the script backs off automatically on SEC rate limits and resumes on the next run if interrupted).
 - Dividends: `/v2/fund/daily-info/dividend-history` (every payout since 1994, ~45 calls) and `/v2/fund/factsheet/dividend-policy` (pays or not, per class), refreshed daily into `data/dividends.json`. Total returns add each payout back on the first NAV date on or after its book-close date, which is when the NAV drops in about 3 of 4 cases checked. The SEC record has gaps (almost nothing for 2021–2023, some payers missing).
+- Master funds: feeder funds' free-text master names are cleaned (Thai "กองทุน", ®, share-class suffixes, umbrella words) and grouped; a shorter name joins a longer one only when the extra words are fund-house/umbrella words. Hedging comes from the fund's FX policy, or from the class name (-H / -UH) when set per class.
 - Each run re-downloads the last 7 days so late or corrected NAVs are picked up.
 - `update.py build` turns `data/` into the website in `site/` (latest table with 1D/1W/1M/3M/6M/YTD/1Y returns + one history file per fund) and the workflow deploys it to GitHub Pages.
 - Daily files are small (~200 KB) and never rewritten once settled, so the repo grows by roughly 50 MB a year.
