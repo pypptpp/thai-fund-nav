@@ -202,8 +202,8 @@ def fetch_funds():
     cached = read(DATA / "funds.json")
     if cached and cached.get("v") == 3:
         age = dt.datetime.now(BKK) - dt.datetime.fromisoformat(cached["updated"])
-        if age < dt.timedelta(days=6):
-            log(f"Fund list: up to date ({len(cached['funds'])} funds, refreshed weekly)")
+        if age < dt.timedelta(hours=20):
+            log(f"Fund list: up to date ({len(cached['funds'])} funds, refreshed daily)")
             return {f["id"]: f for f in cached["funds"]}
     log("Fund list …")
     rows = []
@@ -232,6 +232,19 @@ FX = [("dynamic", "Dynamic hedging (0–105%)"), ("fully", "Fully hedged (95–1
 COUNTRY = {"ลักเซมเบิร์ก": "Luxembourg", "ไอร์แลนด์": "Ireland", "สหรัฐอเมริกา": "United States",
            "สิงคโปร์": "Singapore", "ฮ่องกง": "Hong Kong", "สหราชอาณาจักร": "United Kingdom",
            "ญี่ปุ่น": "Japan", "ฝรั่งเศส": "France", "เกาหลีใต้": "South Korea", "จีน": "China"}
+
+
+# The short names Thai investors use for each fund company (SEC gives the long legal name)
+AMC_SHORT = {"Scb": "SCBAM", "Krungsri": "Krungsri", "Krung Thai": "KTAM", "Bbl": "BBLAM", "Eastspring (Thailand)": "Eastspring",
+             "Mfc": "MFC", "Kasikorn": "KAsset", "Uob (Thailand)": "UOBAM", "Tisco": "TISCO", "Land And Houses Fund Management": "LH Fund",
+             "One": "ONEAM", "Kiatnakin Phatra": "KKPAM", "Asset Plus Fund Management": "Asset Plus", "Talis": "Talis",
+             "Daol Investment Management": "DAOL", "Principal": "Principal", "Aberdeen (Thailand)": "Aberdeen",
+             "Aia Investment Management (Thailand)": "AIA", "First Plus (Thailand)": "First Plus", "Xspring": "XSpring",
+             "Phillip": "Phillip", "Sawakami (Thailand)": "Sawakami"}
+
+
+def amc_short(name):
+    return AMC_SHORT.get(name, name)
 
 
 def plain(html, limit=700):
@@ -632,6 +645,8 @@ def build():
                 stitched += 1
     log(f"Joined early single-class history onto {stitched} share classes")
     for (pid, cls), s in hist.items():
+        if pid not in funds:
+            continue  # closed (matured or cancelled) fund, or not yet in the SEC fund list
         s.sort()
         d, nav, aum = s[-1]
         if d < (dt.date.fromisoformat(newest) - dt.timedelta(days=14)).isoformat():
@@ -720,7 +735,7 @@ def build():
             "id": pid, "cls": cls, "abbr": f.get("abbr", pid),
             "name": cls if cls != "main" else f.get("abbr", pid),
             "en": f.get("en", ""), "th": f.get("th", ""),
-            "amc": f.get("amc", ""), "cat": f.get("cat", "Other"),
+            "amc": amc_short(f.get("amc", "")), "cat": f.get("cat", "Other"),
             "tax": ((f.get("classes") or {}).get(cls) or {}).get("tax", ""),
             "types": ((f.get("classes") or {}).get(cls) or {}).get("types", []),
             "theme": f.get("theme", ""), "region": f.get("region", ""),

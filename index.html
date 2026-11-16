@@ -99,7 +99,15 @@ thead th[aria-sort]{color:var(--accent)}
 thead th[aria-sort="ascending"]::after{content:" ▲"} thead th[aria-sort="descending"]::after{content:" ▼"}
 tbody tr{cursor:pointer}
 tbody tr:hover{background:var(--accent-soft)}
-td.fund{max-width:340px;overflow:hidden;text-overflow:ellipsis}
+td.fund{white-space:normal;min-width:270px;max-width:380px}
+td.fund span[style*="block"]{line-height:1.45;margin-top:2px}
+td.fund b{white-space:nowrap}
+/* pin the fund column while the table scrolls sideways */
+.board th.pin,.board td.fund{position:sticky;left:0;z-index:1;background:var(--panel);box-shadow:1px 0 0 var(--line)}
+.board thead th.pin{z-index:3}
+tbody tr:hover td.fund{background:var(--accent-soft)}
+.topscroll{overflow-x:auto;overflow-y:hidden;height:14px;position:sticky;z-index:4;background:var(--bg);border-radius:6px}
+.topscroll div{height:1px}
 .fund b{font:600 14px var(--display);display:block}
 .fund span{font-size:12px;color:var(--muted)}
 .tag{font:500 10px var(--mono);border:1px solid var(--line);border-radius:4px;padding:1px 5px;margin-left:6px;color:var(--accent);vertical-align:2px}
@@ -270,6 +278,8 @@ sup.fs{color:var(--accent);font-weight:600;margin-left:1px}
 .hchips .chip{font-size:12px;padding:4px 10px}
 .mtab{width:100%;min-width:720px}
 .mtab tbody tr{cursor:pointer}
+.mtab thead th[data-sk],.mtab thead th[data-fk]{cursor:pointer;user-select:none}
+.mtab thead th[data-sk]:hover,.mtab thead th[data-fk]:hover{color:var(--accent)}
 .mtab tbody tr:hover td{background:var(--accent-soft)}
 .mtab tr[aria-current="true"] td{background:var(--accent-soft);font-weight:600}
 .hpill{font:500 11px var(--mono);border-radius:999px;padding:1px 8px;border:1px solid var(--line);color:var(--muted);white-space:nowrap}
@@ -357,6 +367,7 @@ footer a{color:var(--accent)}
     <div class="mthemes" id="mThemes" role="group" aria-label="Master fund themes"></div>
     <div id="mBody" class="mlist"></div>
   </div>
+  <div class="topscroll" id="topScroll" aria-hidden="true"><div></div></div>
   <div class="board">
     <table>
       <thead id="head"></thead>
@@ -420,7 +431,7 @@ const rsBadge = n => n ? `<span class="rs" style="background:${rsColor(+n)}" tit
 const avg = (...v) => { const x=v.filter(a=>a!=null); return x.length ? x.reduce((s,a)=>s+a,0)/x.length : null; };
 const COLS = {
   prices: [["name","Fund","l"],["amc","AMC","l"],["nav","NAV"],["d1","1D"],["m1","1M"],["m3","3M"],["ytd","YTD"],["y1","1Y"],["y3","3Y p.a."],["y5","5Y p.a."],["y7","7Y p.a."],["y10","10Y p.a."],["yld","Yield"],["aum","Net assets"]],
-  rank:   [["score","Score"],["name","Fund","l"],["ter","TER"],["mgmt","Mgmt fee"],["load","Sales fees"],["r3y","3Y p.a."],["vpeer3y","vs peers 3Y"],["sd3y","Volatility 3Y"],["rr3y","Return / risk"],["yld","Yield"],["risk","Risk"],["aum","Net assets"]],
+  rank:   [["name","Fund","l"],["score","Score"],["ter","TER"],["mgmt","Mgmt fee"],["load","Sales fees"],["r3y","3Y p.a."],["vpeer3y","vs peers 3Y"],["sd3y","Volatility 3Y"],["rr3y","Return / risk"],["yld","Yield"],["risk","Risk"],["aum","Net assets"]],
 };
 const FACTORS = [
   {k:"ret",  label:"Long-term return", sub:"3Y and 5Y return p.a., averaged", get:r=>avg(r.r3y ?? r.y3, r.r5y ?? r.y5), hi:true, w:30},
@@ -488,7 +499,7 @@ function init(d){
   opts("#fTax", TAXES.filter(t=>byTax[t]), st.tax);
   const n = p => p==="Watchlist" ? "" : all.filter(r=>inPick(r,p)).length;
   $("#picks").innerHTML = PICKS.filter(p => p==="Watchlist" || n(p)).map(p=>`<button class="chip" data-pick="${esc(p)}" aria-pressed="${st.pick===p}">${p==="Watchlist"?"★ Watchlist":esc(p)}<span class="n">${n(p)}</span></button>`).join("");
-  buildWeights(); tiles(); divCal(); bindMasters(); bind(); setView(st.view, true);
+  buildWeights(); tiles(); divCal(); bindMasters(); bindTopScroll(); bind(); setView(st.view, true);
   all.forEach(r => { bySlug[slugOf(r)] = r; });
   window.addEventListener("hashchange", route);
   route();
@@ -554,7 +565,7 @@ function apply(){
   if (isM) {
     const filtered = st.q||st.amc||st.pick||st.region||st.type||st.cat||st.tax;
     $("#reset").hidden = !filtered; $("#count").textContent = ""; $("#more").hidden = true;
-    renderMasters(); return;
+    $("#topScroll").hidden = true; renderMasters(); return;
   }
   if (st.view === "rank") {
     scoreAll(view);
@@ -566,7 +577,7 @@ function apply(){
   const k = st.sort, d = st.dir;
   view.sort((a,b) => { const x=a[k], y=b[k]; if(x==null&&y==null) return 0; if(x==null) return 1; if(y==null) return -1;
     return (typeof x==="string" ? x.localeCompare(y) : x-y) * d; });
-  $("#head").innerHTML = "<tr>" + COLS[st.view].map(([ck,label,cl]) => `<th data-k="${ck}"${cl?` class="${cl}"`:""}${ck===k?` aria-sort="${d>0?"ascending":"descending"}"`:""}>${label}</th>`).join("") + "</tr>";
+  $("#head").innerHTML = "<tr>" + COLS[st.view].map(([ck,label,cl]) => `<th data-k="${ck}"${cl||ck==="name"?` class="${[cl, ck==="name"?"pin":""].filter(Boolean).join(" ")}"`:""}${ck===k?` aria-sort="${d>0?"ascending":"descending"}"`:""}>${label}</th>`).join("") + "</tr>";
   const filtered = st.q||st.amc||st.pick||st.region||st.type||st.cat||st.tax;
   $("#reset").hidden = !filtered;
   $("#count").textContent = filtered || st.view==="rank" ? `${view.length.toLocaleString()} ${st.view==="rank"&&st.one?"funds":"fund classes"} shown` : "";
@@ -592,12 +603,24 @@ function masterGroups(rows, one){
     return {id, name: MASTERS[id] || "", rs, funds: new Set(rs.map(r => r.id)).size, aum: rs.reduce((s,r) => s + (r.aum||0), 0)};
   }).filter(x => x.funds >= 2).sort((a,b) => b.funds - a.funds || b.aum - a.aum);
 }
+const MCOLS = [["name","Fund","l"],["amc","Company","l"],["hedge","Hedging","l"],["ter","TER"],["y1","1Y"],["y3","3Y p.a."],["y5","5Y p.a."],["y10","10Y p.a."],["aum","Net assets"]];
+const MLOW = ["name","amc","hedge","ter"];   // columns that sort A→Z / lowest first on the first click
+function sortRows(rs, k, d){
+  return rs.slice().sort((a, b) => { const x = a[k], y = b[k];
+    if (x == null || x === "") return (y == null || y === "") ? 0 : 1; if (y == null || y === "") return -1;
+    return (typeof x === "string" ? x.localeCompare(y) : x - y) * d; });
+}
+const mHead = (attr, k, d) => `<tr>${MCOLS.map(([c, l, cl]) => `<th ${attr}="${c}"${cl ? ` class="${cl}"` : ""}${c === k ? ` aria-sort="${d > 0 ? "ascending" : "descending"}"` : ""}>${l}</th>`).join("")}</tr>`;
+const mCells = (x, withCmp) => `${withCmp ? nameCell(x) : `<td><b>${esc(x.name)}</b>${x.tax ? `<span class="tag">${x.tax}</span>` : ""}</td>`}<td class="l sub">${esc(x.amc)}</td><td>${hpill(x)}</td>
+  <td class="num">${fmtFee(x.ter)}</td><td class="num">${fmtPct(x.y1)}</td><td class="num">${fmtLT(x, "y3")}</td><td class="num">${fmtLT(x, "y5")}</td><td class="num">${fmtLT(x, "y10")}</td><td class="num">${fmtAum(x.aum)}</td>`;
+
 const hpill = r => r.hedge ? `<span class="hpill ${r.hedge}">${r.hedge}</span>` : '<span class="flat">–</span>';
 const HEDGES = ["Unhedged","Hedged","Dynamic"];
 
 function masterCard(g){
   const s = mstate[g.id] ||= {h: "", all: false};
-  const rs = s.h ? g.rs.filter(r => r.hedge === s.h) : g.rs;
+  const sk = s.sk || (mSort === "ret" ? mP : "ter"), sd = s.sk ? s.sd : (mSort === "ret" ? -1 : 1);
+  const rs = sortRows(s.h ? g.rs.filter(r => r.hedge === s.h) : g.rs, sk, sd);
   const ters = g.rs.map(r => r.ter).filter(v => v != null), cheap = g.rs.find(r => r.ter != null);
   const lo = ters.length ? Math.min(...ters) : null, hi = ters.length ? Math.max(...ters) : null;
   const byH = HEDGES.map(hh => { const x = g.rs.filter(r => r.hedge === hh); const v = x.map(r => r[mP]).filter(y => y != null);
@@ -613,9 +636,8 @@ function masterCard(g){
       ${byH.map(x => `<div><span class="lbl">${mP === "y1" ? "1-year return" : mP.slice(1) + "-year return p.a."} · ${x.hh}</span><b>${fmtPct(x.med)}</b><span class="sub">${x.k ? `median of ${x.k}${x.k < x.n ? ` (${x.n - x.k} too new)` : ""}${x.k > 1 ? ` · ${x.lo.toFixed(1)} to ${x.hi.toFixed(1)}%` : ""}` : `${x.n} fund${x.n > 1 ? "s" : ""}, none ${MPER[mP]} old`}</span></div>`).join("")}
     </div>
     ${byH.length > 1 ? `<div class="chips hchips"><button class="chip" data-h="" aria-pressed="${!s.h}">All ${g.rs.length}</button>${byH.map(x => `<button class="chip" data-h="${x.hh}" aria-pressed="${s.h === x.hh}">${x.hh} ${x.n}</button>`).join("")}</div>` : ""}
-    <div class="ftwrap"><table class="ftable mtab"><thead><tr><th>Fund</th><th>Company</th><th>Hedging</th><th>TER</th><th>1Y</th><th>3Y p.a.</th><th>5Y p.a.</th><th>10Y p.a.</th><th>Net assets</th></tr></thead><tbody>
-      ${list.map(r => `<tr data-k="${esc(r.key)}">${nameCell(r)}<td class="l sub">${esc(r.amc)}</td><td>${hpill(r)}</td><td class="num">${fmtFee(r.ter)}</td>
-        <td class="num">${fmtPct(r.y1)}</td><td class="num">${fmtLT(r, "y3")}</td><td class="num">${fmtLT(r, "y5")}</td><td class="num">${fmtLT(r, "y10")}</td><td class="num">${fmtAum(r.aum)}</td></tr>`).join("")}
+    <div class="ftwrap"><table class="ftable mtab"><thead>${mHead("data-sk", sk, sd)}</thead><tbody>
+      ${list.map(r => `<tr data-k="${esc(r.key)}">${mCells(r, true)}</tr>`).join("")}
     </tbody></table></div>
     ${rs.length > 6 ? `<button class="reset" data-all>${s.all ? "Show fewer" : `Show all ${rs.length}`}</button>` : ""}
   </section>`;
@@ -695,7 +717,7 @@ function bindMasters(){
   $("#masterList").addEventListener("click", e => {
     const card = e.target.closest(".mcard"), g = card && renderMasters.groups.find(x => x.id === card.dataset.g);
     const mp = e.target.closest("[data-mp]"); if (mp) { mP = mp.dataset.mp; renderMasters(); return; }
-    const ms = e.target.closest("[data-ms]"); if (ms) { mSort = ms.dataset.ms; renderMasters(); return; }
+    const ms = e.target.closest("[data-ms]"); if (ms) { mSort = ms.dataset.ms; Object.values(mstate).forEach(x => { delete x.sk; delete x.sd; }); renderMasters(); return; }
     const mt = e.target.closest("[data-mt]");
     if (mt) { mTheme = mTheme === mt.dataset.mt ? "" : mt.dataset.mt; mQuery = ""; $("#mSearch").value = ""; mOpen.clear(); renderMasters();
       if (mTheme) $("#mBody").scrollIntoView({behavior: "smooth", block: "start"}); return; }
@@ -711,7 +733,11 @@ function bindMasters(){
     const hb = e.target.closest("[data-h]");
     if (hb) { s.h = hb.dataset.h; s.all = false; card.outerHTML = masterCard(g); return; }
     if (e.target.closest("[data-all]")) { s.all = !s.all; card.outerHTML = masterCard(g); return; }
-    if (e.target.closest("[data-cmpg]")) { const rows = (s.h ? g.rs.filter(x => x.hedge === s.h) : g.rs).slice(0, 10); if (rows.length >= 2) navTo(cmpHash(rows)); }
+    const th = e.target.closest("th[data-sk]");
+    if (th) { const k = th.dataset.sk, cur = s.sk || (mSort === "ret" ? mP : "ter"), curD = s.sk ? s.sd : (mSort === "ret" ? -1 : 1);
+      s.sk = k; s.sd = k === cur ? -curD : (MLOW.includes(k) ? 1 : -1); card.outerHTML = masterCard(g); return; }
+    if (e.target.closest("[data-cmpg]")) { const sk = s.sk || (mSort === "ret" ? mP : "ter"), sd = s.sk ? s.sd : (mSort === "ret" ? -1 : 1);
+      const rows = sortRows(s.h ? g.rs.filter(x => x.hedge === s.h) : g.rs, sk, sd).slice(0, 10); if (rows.length >= 2) navTo(cmpHash(rows)); }
   });
 }
 
@@ -726,6 +752,20 @@ function divCal(){
   $("#divMore").hidden = ev.length <= 8; $("#divMore").textContent = divCal.all ? "Show fewer" : `Show all ${ev.length}`;
 }
 
+function syncTopScroll(){
+  const ts = $("#topScroll"), bd = $(".board"), tb = bd && bd.querySelector("table"); if (!ts || !tb) return;
+  ts.firstElementChild.style.width = tb.scrollWidth + "px";
+  ts.hidden = bd.hidden || tb.scrollWidth <= bd.clientWidth + 1;
+  const ctl = document.querySelector(".controls"); ts.style.top = `calc(env(safe-area-inset-top, 0px) + ${ctl ? ctl.offsetHeight : 0}px)`;
+  ts.scrollLeft = bd.scrollLeft;
+}
+function bindTopScroll(){
+  const ts = $("#topScroll"), bd = $(".board"); let lock = false;
+  ts.addEventListener("scroll", () => { if (lock) { lock = false; return; } lock = true; bd.scrollLeft = ts.scrollLeft; });
+  bd.addEventListener("scroll", () => { if (lock) { lock = false; return; } lock = true; ts.scrollLeft = bd.scrollLeft; });
+  window.addEventListener("resize", syncTopScroll);
+}
+
 function nameCell(r){
   return `<td class="fund"><button class="star" aria-label="Watch" aria-pressed="${watch.has(r.key)}">★</button><button class="cmpb" data-k="${esc(r.key)}" aria-label="Add to compare" title="Add to compare" aria-pressed="${cmp.includes(r.key)}"></button><b style="display:inline">${esc(r.name)}</b>${r.tax?`<span class="tag">${r.tax}</span>`:""}${r.theme?`<span class="tag t">${esc(r.theme)}</span>`:""}${r.types.includes("ETF")?`<span class="tag t">ETF</span>`:r.types.includes("Index")?`<span class="tag t">Index</span>`:""}${r.div?`<span class="dtag" title="Pays dividends">DIV</span>`:""}<span style="display:block">${esc(r.th||r.en)}</span></td>`;
 }
@@ -734,8 +774,8 @@ function render(){
   const rows = view.slice(0, shown);
   $("#rows").innerHTML = st.view === "rank"
     ? rows.map((r,i) => `<tr data-i="${i}">
-        <td class="num">${r.score==null?'<span class="flat" title="Needs a 3-year record">–</span>':`<span class="score"><span class="rank">#${r.srank}</span><i><b style="width:${r.score}%"></b></i>${r.score}</span>`}</td>
         ${nameCell(r)}
+        <td class="num">${r.score==null?'<span class="flat" title="Needs a 3-year record">–</span>':`<span class="score"><span class="rank">#${r.srank}</span><i><b style="width:${r.score}%"></b></i>${r.score}</span>`}</td>
         <td class="num">${fmtFee(r.ter)}</td><td class="num">${fmtFee(r.mgmt)}</td><td class="num">${fmtFee(r.load)}</td>
         <td class="num">${fmtPct(r.r3y)}</td><td class="num">${fmtPct(r.vpeer3y)}</td>
         <td class="num">${r.sd3y==null?'<span class="flat">–</span>':r.sd3y.toFixed(2)+"%"}</td><td class="num">${fmtNum(r.rr3y)}</td><td class="num">${fmtYld(r.yld)}</td>
@@ -747,6 +787,7 @@ function render(){
         <td class="num">${fmtPct(r.ytd)}</td><td class="num">${fmtPct(r.y1)}</td>
         ${LONGK.map(k => `<td class="num">${fmtLT(r, k)}</td>`).join("")}
         <td class="num">${fmtYld(r.yld)}</td><td class="num">${fmtAum(r.aum)}</td></tr>`).join("");
+  requestAnimationFrame(syncTopScroll);
   $("#empty").hidden = view.length > 0;
   $("#more").hidden = view.length <= shown;
   $("#more").textContent = `Show more (${(view.length-shown).toLocaleString()} left)`;
@@ -923,11 +964,10 @@ async function showFund(r){
       return `<section class="panel wide">
       <div class="phead"><h3>Same master fund</h3><span class="sub">${g.funds} Thai funds invest in ${esc(MASTERS[r.mg])}. Same portfolio underneath, so compare fees and currency hedging.</span>
         <button class="go sm" id="cmpMaster" style="margin-left:auto">Compare ${pick.length} →</button></div>
-      <div class="ftwrap"><table class="ftable mtab"><thead><tr><th>Fund</th><th>Company</th><th>Hedging</th><th>TER</th><th>1Y</th><th>3Y p.a.</th><th>5Y p.a.</th><th>10Y p.a.</th><th>Net assets</th></tr></thead><tbody id="masterRows">
-        ${g.rs.map(x => `<tr data-s="${slugOf(x)}" ${x === r ? 'aria-current="true"' : ""}><td><b>${esc(x.name)}</b>${x.tax ? `<span class="tag">${x.tax}</span>` : ""}</td><td class="sub">${esc(x.amc)}</td><td>${hpill(x)}</td>
-          <td class="num">${fmtFee(x.ter)}</td><td class="num">${fmtPct(x.y1)}</td><td class="num">${fmtLT(x, "y3")}</td><td class="num">${fmtLT(x, "y5")}</td><td class="num">${fmtLT(x, "y10")}</td><td class="num">${fmtAum(x.aum)}</td></tr>`).join("")}
+      <div class="ftwrap"><table class="ftable mtab"><thead id="masterHead">${mHead("data-fk", "ter", 1)}</thead><tbody id="masterRows">
+        ${g.rs.map(x => `<tr data-s="${slugOf(x)}" ${x === r ? 'aria-current="true"' : ""}>${mCells(x, false)}</tr>`).join("")}
       </tbody></table></div>
-      <div class="sub">Sorted by total expense, lowest first. "Compare" picks this fund plus the cheapest others, same hedging first.</div>
+      <div class="sub">Click a column to sort; click again to reverse. "Compare" picks this fund plus the cheapest others, same hedging first.</div>
     </section>`; })() : ""}
 
     ${classes.length > 1 ? `<section class="panel wide">
@@ -959,6 +999,12 @@ async function showFund(r){
   $("#cMode").onclick = e => { const b = e.target.closest("button"); if (!b) return; chartState.m = b.dataset.m;
     $("#cMode").querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x === b)); drawBig(); };
   const mr = $("#masterRows"); if (mr) mr.onclick = e => { const tr = e.target.closest("tr[data-s]"); if (tr) location.hash = tr.dataset.s; };
+  const mh = $("#masterHead");
+  if (mh) { let fk = "ter", fd = 1;
+    const sibs = masterGroups(all.filter(x => x.mg === r.mg && (x.id !== r.id || x === r)), true)[0].rs;
+    mh.onclick = e => { const th = e.target.closest("th[data-fk]"); if (!th) return; const k = th.dataset.fk;
+      fd = k === fk ? -fd : (MLOW.includes(k) ? 1 : -1); fk = k; mh.innerHTML = mHead("data-fk", fk, fd);
+      $("#masterRows").innerHTML = sortRows(sibs, fk, fd).map(x => `<tr data-s="${slugOf(x)}" ${x === r ? 'aria-current="true"' : ""}>${mCells(x, false)}</tr>`).join(""); }; }
   const cm = $("#cmpMaster"); if (cm) cm.onclick = () => { const g = masterGroups(all.filter(x => x.mg === r.mg && (x.id !== r.id || x === r)), true)[0];
     const others = g.rs.filter(x => x !== r); navTo(cmpHash([r, ...others.filter(x => x.hedge === r.hedge), ...others.filter(x => x.hedge !== r.hedge)].slice(0, 10))); };
   const cr = $("#classRows"); if (cr) cr.onclick = e => { const tr = e.target.closest("tr[data-s]"); if (tr) location.hash = tr.dataset.s; };
