@@ -1,6 +1,6 @@
 # Thai Fund NAV Board
 
-A website that shows the daily NAV of every Thai mutual fund, refreshed automatically every morning at 06:07 (Bangkok time) from the SEC Open Data API.
+A website that shows the daily NAV of every Thai mutual fund, refreshed automatically twice a day, around 10:17 and 20:17 (Bangkok time) from the SEC Open Data API.
 
 **Cost: ฿0.** Everything runs on GitHub's free tier:
 
@@ -52,7 +52,7 @@ You do **not** need to rent a server or a database.
    - ถ้าต้องการประวัติ 10 ปี (แนะนำ): ตอนกด Run workflow ให้ใส่ช่อง **From date** = `2016-01-01` (ใช้เวลาประมาณ 2–3 ชั่วโมง ทำครั้งเดียว)
 4. เว็บของคุณจะอยู่ที่ `https://<ชื่อผู้ใช้ GitHub>.github.io/thai-fund-nav/`
 
-หลังจากนี้ระบบจะอัปเดตเองทุกเช้า 06:07 น. ไม่ต้องทำอะไรอีก
+หลังจากนี้ระบบจะอัปเดตเองวันละ 2 ครั้ง ประมาณ 10:17 และ 20:17 น. ไม่ต้องทำอะไรอีก
 
 ---
 

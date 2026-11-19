@@ -476,7 +476,11 @@ function init(d){
     hay: (r.name+" "+r.abbr+" "+r.en+" "+r.th+" "+r.amc+" "+(r.master||"")+" "+(d.masters?.[r.mg]||"")+" "+(r.theme||"")+" "+(r.region||"")+" "+(r.types||[]).join(" ")).toLowerCase()}));
   MASTERS = d.masters || {};
   applyTR();
-  $("#stamp").innerHTML = `<b>NAV ${thDate(d.nav_date)}</b>updated ${esc(d.built.replace("T"," "))} ICT · ${d.days} days stored`;
+  const byDate = {}; all.forEach(r => { byDate[r.date] = (byDate[r.date] || 0) + 1; });
+  const nLatest = byDate[d.nav_date] || 0, prev = Object.keys(byDate).filter(x => x < d.nav_date).sort((a,b) => byDate[b] - byDate[a])[0];
+  const partial = nLatest < all.length * 0.8 && prev;
+  $("#stamp").innerHTML = `<b>NAV ${thDate(d.nav_date)}</b>${partial ? `${nLatest.toLocaleString()} classes so far · most others ${thDate(prev)}<br>` : ""}updated ${esc(d.built.slice(0,16).replace("T"," "))} ICT · ${d.days} days stored`;
+  $("#stamp").title = "Fund companies report each day's NAV to the SEC over the next 1–2 business days. The site re-checks the last 7 days on every update.";
   // pulse
   const latest = all.filter(r => r.date === d.nav_date);
   $("#kCount").textContent = all.length.toLocaleString();
