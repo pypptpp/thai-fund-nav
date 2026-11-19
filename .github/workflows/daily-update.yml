@@ -2,9 +2,12 @@ name: Daily NAV update
 
 on:
   schedule:
-    # 06:07 Bangkok time every day (23:07 UTC). SEC posts the previous
-    # day's NAVs overnight, so this picks up the newest prices each morning.
-    - cron: "7 23 * * *"
+    # Twice a day, 10:17 and 20:17 Bangkok time (03:17 and 13:17 UTC).
+    # Fund companies send NAVs to the SEC over the next 1-2 business days,
+    # so each run re-downloads the last 7 days to pick up late prices.
+    # GitHub may start scheduled runs late when its servers are busy.
+    - cron: "17 3 * * *"
+    - cron: "17 13 * * *"
   workflow_dispatch:
     inputs:
       days:
@@ -50,8 +53,8 @@ jobs:
 
       - name: Save new data to the repo (this is the database)
         run: |
-          git config user.name "nav-bot"
-          git config user.email "nav-bot@users.noreply.github.com"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add data
           git diff --cached --quiet || git commit -m "NAV update $(TZ=Asia/Bangkok date +%F)"
           git push
