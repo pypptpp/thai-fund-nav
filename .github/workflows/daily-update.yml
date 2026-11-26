@@ -60,6 +60,9 @@ jobs:
           git push
 
       - name: Build website
+        env:
+          UMAMI_WEBSITE_ID: ${{ vars.UMAMI_WEBSITE_ID }}
+          GOOGLE_SITE_VERIFICATION: ${{ vars.GOOGLE_SITE_VERIFICATION }}
         run: python update.py build
 
       - uses: actions/configure-pages@v5
