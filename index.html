@@ -1,6 +1,13 @@
 <title>Thai Fund NAV Board</title>
+<script>window.UMAMI_ID = "__UMAMI_ID__";</script>
 <meta name="claude:viewport-fit-sides" content="cover">
-<meta name="description" content="Daily NAV of every Thai mutual fund, from SEC Open Data.">
+<meta name="description" content="ราคา NAV กองทุนรวมไทยทุกกอง อัปเดตทุกวันจาก ก.ล.ต. เปรียบเทียบผลตอบแทน 1–10 ปี ค่าธรรมเนียม เงินปันผล และกองทุนที่ลงทุนใน master fund เดียวกัน · Daily NAV, returns, fees and dividends of every Thai mutual fund, from SEC Open Data.">
+<meta name="google-site-verification" content="__GSC_TOKEN__">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Thai Fund NAV Board">
+<meta property="og:description" content="ราคา NAV กองทุนรวมไทยทุกกอง อัปเดตทุกวัน · เปรียบเทียบผลตอบแทน ค่าธรรมเนียม เงินปันผล">
+<meta property="og:locale" content="th_TH">
+<meta name="twitter:card" content="summary">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bai+Jamjuree:wght@500;600;700&family=IBM+Plex+Sans+Thai:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
 <style>
@@ -379,6 +386,7 @@ footer a{color:var(--accent)}
 
   <footer>
     NAV per unit in THB as reported by each AMC to the SEC. Returns come from daily NAV, with dividends added back when "Returns include dividends" is on. 3-, 5-, 7- and 10-year figures are compound returns a year. † marks an official factsheet figure, used where the SEC dividend record for a fund is incomplete. Fees, the official return table, peer averages, volatility and risk level come from each fund's latest monthly factsheet filed with the SEC; for feeder funds the TER covers the Thai fund only, not the master fund's own fees. The score is a screening aid, not investment advice.
+    Visits are counted with Umami, which uses no cookies and collects no personal information.
     Data: <a href="https://secopendata.sec.or.th" target="_blank" rel="noopener">SEC Open Data</a>.
   </footer>
 </div>
@@ -391,6 +399,66 @@ footer a{color:var(--accent)}
 <script>
 (() => {
 const $ = s => document.querySelector(s);
+
+/* ---------- visitor analytics (Umami, no cookies) ----------
+   Turned on only when the site is built with a Umami website ID (GitHub variable UMAMI_WEBSITE_ID).
+   Fund pages are counted as their own pages (/fund/<code>), so Umami's Pages report ranks the most
+   viewed funds. Feature use is sent as named events with a few details. */
+const UMAMI = (window.UMAMI_ID || "").startsWith("__") ? "" : (window.UMAMI_ID || "");
+const aq = [];
+function track(name, data){
+  if (!UMAMI) return;
+  try { window.umami ? window.umami.track(name, data) : aq.push(["e", name, data]); } catch {}
+}
+function trackPage(url, title){
+  if (!UMAMI) return;
+  const send = () => window.umami.track(p => ({...p, url, title}));
+  try { window.umami ? send() : aq.push(["p", url, title]); } catch {}
+}
+if (UMAMI) {
+  const s = document.createElement("script");
+  s.defer = true; s.src = "https://cloud.umami.is/script.js";
+  s.dataset.websiteId = UMAMI; s.dataset.autoTrack = "false";
+  s.onload = () => aq.splice(0).forEach(([k, a, b]) => { try { k === "p" ? window.umami.track(p => ({...p, url: a, title: b})) : window.umami.track(a, b); } catch {} });
+  document.head.appendChild(s);
+}
+const later = (fn, ms) => { let t; return (...a) => { clearTimeout(t); t = setTimeout(() => fn(...a), ms); }; };
+const trackSearch = later((where, q) => { q = q.trim(); if (q.length >= 2) track(where, {q: q.toLowerCase().slice(0, 40)}); }, 1500);
+// One listener records feature use everywhere, so the feature code itself stays untouched.
+document.addEventListener("click", e => {
+  const t = e.target, at = (sel) => t.closest(sel);
+  const rowOf = key => all.find(r => r.key === key);
+  let el;
+  if ((el = at("#viewTabs [data-v]"))) track("tab", {tab: el.dataset.v});
+  else if ((el = at("[data-pick]"))) track("quick-filter", {theme: el.dataset.pick});
+  else if ((el = at("#thPeriod [data-p]"))) track("theme-period", {period: el.dataset.p});
+  else if ((el = at(".cmpb"))) { const r = rowOf(el.dataset.k); if (r && !cmp.includes(r.key)) track("compare-add", {fund: r.name}); }
+  else if ((el = at("#cmpBtn")) && cur && !cmp.includes(cur.key)) track("compare-add", {fund: cur.name});
+  else if ((el = at("#trayGo"))) track("compare-open", {from: "tray", funds: cmp.length});
+  else if ((el = at("[data-cmpg]"))) track("compare-open", {from: "same master", master: MASTERS[el.dataset.cmpg] || ""});
+  else if ((el = at("#cmpMaster"))) track("compare-open", {from: "fund page", fund: cur ? cur.name : ""});
+  else if ((el = at(".star, #watchBtn"))) track("watchlist", {});
+  else if ((el = at("[data-mt]")) && el.dataset.mt) track("master-theme", {theme: el.dataset.mt});
+  else if ((el = at("[data-open]")) && !el.closest(".mitem.open")) track("master-open", {master: MASTERS[el.dataset.open] || ""});
+  else if ((el = at("[data-mp]"))) track("master-period", {period: el.dataset.mp});
+  else if ((el = at("#cPeriod [data-p]"))) track("chart-period", {page: "fund", period: el.dataset.p});
+  else if ((el = at("#cMode [data-m]"))) track("chart-mode", {mode: el.dataset.m});
+  else if ((el = at("#ccPeriod [data-p]"))) track("chart-period", {page: "compare", period: el.dataset.p});
+  else if ((el = at("#head th[data-k], th[data-sk], th[data-fk]"))) track("sort", {column: el.textContent.trim()});
+  else if ((el = at("#divRows tr[data-k]"))) track("dividend-calendar", {});
+}, true);
+document.addEventListener("change", e => {
+  const id = e.target.id, v = e.target.value;
+  const names = {amc: "company", fRegion: "region", fType: "fund type", fCat: "asset class", fTax: "tax-saving"};
+  if (names[id] && v) track("filter", {filter: names[id], value: v});
+  else if (id === "trOn") track("dividends-toggle", {on: e.target.checked});
+  else if (id === "oneClass") track("one-class-toggle", {on: e.target.checked});
+}, true);
+document.addEventListener("input", e => {
+  if (e.target.id === "q") trackSearch("search", e.target.value);
+  else if (e.target.id === "mSearch") trackSearch("master-search", e.target.value);
+  else if (e.target.id === "cmpAdd") trackSearch("compare-search", e.target.value);
+}, true);
 const store = {get(k,d){try{return JSON.parse(localStorage.getItem(k))??d}catch{return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch{}}};
 const PICKS = ["Watchlist","Pays dividends","Technology","Healthcare","Gold","ETF","Index","Money Market","Dividend","Property & REIT","Infrastructure","Energy & Resources","Clean Energy & Climate","Private Assets","Small & Mid Cap","Financials","Consumer"];
 const TILE_PICKS = PICKS.filter(p => p !== "Watchlist");
@@ -831,13 +899,18 @@ function route(){
   if (hs.startsWith("compare")) {
     const rows = hs.split("--").slice(1).map(s => bySlug[s]).filter(Boolean).slice(0, MAXC);
     cur = null; show("compareView"); showCompare(rows); window.scrollTo(0, 0);
+    trackPage("/compare", `Compare ${rows.length} funds`);
+    if (rows.length >= 2) track("compare-view", {funds: rows.length, list: rows.map(r => r.name).join(", ").slice(0, 300)});
   } else if (bySlug[hs]) {
     show("fundView"); showFund(bySlug[hs]); window.scrollTo(0, 0);
+    trackPage("/fund/" + bySlug[hs].name, bySlug[hs].name);
   } else {
+    if (route.last !== "board") trackPage("/", "Fund board");
     const away = $("#boardView").hidden;
     depth = 0; cur = null; show("boardView"); document.title = baseTitle;
     if (away) { if (st.view === "rank") apply(); else render(); requestAnimationFrame(() => window.scrollTo(0, boardScroll)); }
   }
+  route.last = hs.startsWith("compare") ? "compare" : bySlug[hs] ? "fund" : "board";
   renderTray();
 }
 

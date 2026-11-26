@@ -766,11 +766,29 @@ def build():
         "days": len(files), "rows": latest,
         "masters": {g: n for g, n in mname.items() if msize.get(g, 0) >= 2}})
     page = (ROOT / "index.html").read_text(encoding="utf-8")
+    # visitor analytics: the Umami website ID comes from the GitHub variable UMAMI_WEBSITE_ID
+    uid = re.sub(r"[^0-9a-fA-F-]", "", os.environ.get("UMAMI_WEBSITE_ID", ""))
+    page = page.replace("__UMAMI_ID__", uid)
+    # Google Search Console ownership check: token from the GitHub variable GOOGLE_SITE_VERIFICATION
+    gsc = re.sub(r"[^0-9A-Za-z_-]", "", os.environ.get("GOOGLE_SITE_VERIFICATION", ""))
+    page = page.replace("__GSC_TOKEN__", gsc) if gsc else re.sub(r'<meta name="google-site-verification"[^>]*>\n?', "", page)
+    # the site's public address, e.g. https://pypptpp.github.io/thai-fund-nav/
+    repo = os.environ.get("GITHUB_REPOSITORY", "")
+    base = f"https://{repo.split('/')[0].lower()}.github.io/{repo.split('/')[1]}/" if "/" in repo else ""
+    if base:
+        page = page.replace('<meta property="og:type"', f'<link rel="canonical" href="{base}">\n<meta property="og:url" content="{base}">\n<meta property="og:type"', 1)
     if "<!doctype" not in page[:200].lower():
+        # title, meta tags, fonts and styles belong in <head> (Google reads its tags from there)
+        cut = page.find('<div class="wrap"')
+        head, body = (page[:cut], page[cut:]) if cut > 0 else ("", page)
         page = ('<!doctype html>\n<html lang="th">\n<head>\n<meta charset="utf-8">\n'
                 '<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">\n'
-                '</head>\n<body>\n' + page + '\n</body>\n</html>\n')
+                + head + '</head>\n<body>\n' + body + '\n</body>\n</html>\n')
     (SITE / "index.html").write_text(page, encoding="utf-8")
+    if base:  # sitemap for Google Search Console
+        (SITE / "sitemap.xml").write_text(
+            '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
+            f'  <url><loc>{base}</loc><lastmod>{newest}</lastmod><changefreq>daily</changefreq></url>\n</urlset>\n', encoding="utf-8")
     (SITE / ".nojekyll").write_text("")
     log(f"Site built: {len(latest)} fund classes, {len(per_fund)} funds, NAV date {newest}, {len(files)} days of history")
 

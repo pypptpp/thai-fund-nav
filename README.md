@@ -69,6 +69,29 @@ You do **not** need to rent a server or a database.
 
 - **Same master fund**: แท็บที่ 3 รวมกองทุนไทยที่ลงทุนในกองทุนหลัก (master fund) ตัวเดียวกัน — เทียบ TER, การป้องกันความเสี่ยงค่าเงิน (Unhedged / Hedged / Dynamic) และผลตอบแทน กด "Compare" เพื่อเปรียบเทียบได้ทันที หน้ากองทุนแต่ละกองก็มีส่วน "Same master fund" เช่นกัน
 
+## สถิติผู้เข้าชม (Umami — ฟรี ไม่ใช้คุกกี้)
+1. สมัครที่ https://cloud.umami.is (แผน Hobby ฟรี: 100,000 events/เดือน, 1 เว็บไซต์, เก็บข้อมูล 6 เดือน)
+2. **Add website** → Name: `Thai Fund NAV Board`, Domain: `pypptpp.github.io` → Save
+3. เปิดเว็บไซต์ที่เพิ่ง add → **Edit** → คัดลอก **Website ID** (รูปแบบ `xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx`)
+4. ใน GitHub repo: **Settings → Secrets and variables → Actions → แท็บ Variables → New repository variable**
+   - Name: `UMAMI_WEBSITE_ID`  · Value: Website ID ที่คัดลอกมา → Add variable
+5. **Actions → Daily NAV update → Run workflow** — หลังรันเสร็จ เว็บจะเริ่มส่งสถิติไป Umami
+
+สิ่งที่ดูได้ใน Umami: จำนวนผู้เข้าชม, ประเทศ/จังหวัด/เมือง, อุปกรณ์, มาจากไหน (Google, LINE, Facebook),
+หน้ากองทุนที่ถูกเปิดมากที่สุด (`/fund/<รหัสกองทุน>` ในรายงาน Pages) และการใช้ฟังก์ชันต่าง ๆ (รายงาน Events):
+`tab`, `quick-filter`, `filter`, `search`, `compare-add`, `compare-open`, `compare-view`, `watchlist`,
+`master-theme`, `master-open`, `master-search`, `chart-period`, `chart-mode`, `sort`, `dividends-toggle`, `dividend-calendar`
+
+## Google Search Console (ดูว่าคนค้นหาอะไรใน Google แล้วเจอเว็บเรา — ฟรี ไม่ใช้คุกกี้)
+1. ไปที่ https://search.google.com/search-console → **Add property** → เลือกแบบ **URL prefix** → ใส่ `https://pypptpp.github.io/thai-fund-nav/` → Continue
+2. ในหน้าวิธียืนยัน เลือก **HTML tag** → คัดลอกเฉพาะค่าใน `content="..."` (ไม่เอาเครื่องหมายคำพูด)
+3. GitHub repo → **Settings → Secrets and variables → Actions → Variables → New repository variable**
+   - Name: `GOOGLE_SITE_VERIFICATION` · Value: ค่าที่คัดลอกมา → Add variable
+4. **Actions → Daily NAV update → Run workflow** แล้วรอจนเสร็จ (เครื่องหมายถูกสีเขียว)
+5. กลับไปที่ Search Console กด **Verify**
+6. เมนูซ้าย **Sitemaps** → ใส่ `sitemap.xml` → Submit
+ข้อมูลคำค้นหาจะเริ่มแสดงภายในไม่กี่วัน (รายงาน **Performance**)
+
 ## ถ้ามีปัญหา
 | อาการ | วิธีแก้ |
 |---|---|
