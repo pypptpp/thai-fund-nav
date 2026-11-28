@@ -69,6 +69,10 @@ You do **not** need to rent a server or a database.
 
 - **Factsheet**: หน้ากองทุนมีปุ่ม **Factsheet PDF ↗** เปิดหนังสือชี้ชวนส่วนสรุปข้อมูลสำคัญ (fund fact sheet) ล่าสุดของ class นั้นจากเว็บ บลจ. และลิงก์ "SEC copy" สำรองจาก ก.ล.ต. (อัปเดตทุกวัน)
 
+- **My portfolio** (ปุ่มขวาสุดของแท็บ หรือปุ่ม "＋ My portfolio" ในหน้ากองทุน): บันทึกการซื้อ/ขาย ดูมูลค่า กำไร/ขาดทุน (ต้นทุนเฉลี่ย) เงินปันผลที่ได้รับ (ประมาณจากข้อมูล ก.ล.ต.) สัดส่วนการลงทุน ค่าธรรมเนียมรวมต่อปี และกราฟมูลค่าย้อนหลัง
+  - ไม่ต้องสมัครสมาชิก ข้อมูลเก็บในเบราว์เซอร์ของผู้ใช้เท่านั้น (ไม่ถูกส่งมาที่เรา) มีปุ่ม Backup/Restore เป็นไฟล์หรือรหัสสำหรับย้ายเครื่อง
+  - เวอร์ชันฟรีสร้างได้ไม่เกิน 2 พอร์ต (ตั้งค่าที่ `PORT_LIMIT` ใน index.html) — คนที่กดสร้างพอร์ตที่ 3 จะถูกนับเป็น event `portfolio-limit` ใน Umami ใช้วัดความต้องการแผนเสียเงินได้
+
 - **Same master fund**: แท็บที่ 3 รวมกองทุนไทยที่ลงทุนในกองทุนหลัก (master fund) ตัวเดียวกัน — เทียบ TER, การป้องกันความเสี่ยงค่าเงิน (Unhedged / Hedged / Dynamic) และผลตอบแทน กด "Compare" เพื่อเปรียบเทียบได้ทันที หน้ากองทุนแต่ละกองก็มีส่วน "Same master fund" เช่นกัน
 
 ## สถิติผู้เข้าชม (Umami — ฟรี ไม่ใช้คุกกี้)
@@ -82,7 +86,7 @@ You do **not** need to rent a server or a database.
 สิ่งที่ดูได้ใน Umami: จำนวนผู้เข้าชม, ประเทศ/จังหวัด/เมือง, อุปกรณ์, มาจากไหน (Google, LINE, Facebook),
 หน้ากองทุนที่ถูกเปิดมากที่สุด (`/fund/<รหัสกองทุน>` ในรายงาน Pages) และการใช้ฟังก์ชันต่าง ๆ (รายงาน Events):
 `tab`, `quick-filter`, `filter`, `search`, `compare-add`, `compare-open`, `compare-view`, `watchlist`,
-`master-theme`, `master-open`, `master-search`, `chart-period`, `chart-mode`, `sort`, `dividends-toggle`, `dividend-calendar`
+`master-theme`, `master-open`, `master-search`, `factsheet`, `portfolio-add`, `portfolio-create`, `portfolio-limit`, `portfolio-backup`, `portfolio-restore`, `portfolio-delete`, `chart-period`, `chart-mode`, `sort`, `dividends-toggle`, `dividend-calendar`
 
 ## Google Search Console (ดูว่าคนค้นหาอะไรใน Google แล้วเจอเว็บเรา — ฟรี ไม่ใช้คุกกี้)
 1. ไปที่ https://search.google.com/search-console → **Add property** → เลือกแบบ **URL prefix** → ใส่ `https://pypptpp.github.io/thai-fund-nav/` → Continue

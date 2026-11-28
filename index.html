@@ -297,6 +297,66 @@ sup.fs{color:var(--accent);font-weight:600;margin-left:1px}
 .fsbtn{display:inline-flex;align-items:center;border:1px solid var(--line);background:var(--panel);color:var(--accent);border-radius:8px;padding:7px 12px;font-weight:600;font-size:13px;text-decoration:none}
 .fsbtn:hover{border-color:var(--accent)}
 .fslink{color:var(--accent);white-space:nowrap}
+
+/* ---------- My portfolio ---------- */
+.tabs.big .myport{margin-left:8px;border-color:var(--accent);color:var(--accent)}
+.tabs.big .myport:hover{background:var(--accent-soft)}
+.pbar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between}
+.pbar .tabs{flex-wrap:wrap}
+.pbar .tabs button{font-size:13px;padding:7px 12px;font-weight:600}
+.pbar .tabs button[aria-pressed="true"] .sub{color:inherit;opacity:.75}
+.pbar #pNew{border-style:dashed;color:var(--accent)}
+.pbar #pNew.locked{color:var(--muted)}
+.pacts{display:flex;gap:6px}
+.pacts button,.pbk button,.pbk .filebtn,#pPasteGo,.pnote button,.txdel{border:1px solid var(--line);background:var(--panel);border-radius:8px;padding:6px 11px;cursor:pointer;font-size:12px;color:var(--ink)}
+.pacts button:hover,.pbk button:hover,.pbk .filebtn:hover{border-color:var(--accent);color:var(--accent)}
+.pnote{border:1px solid var(--line);border-left:3px solid var(--accent);background:var(--panel);border-radius:8px;padding:10px 14px;display:block}
+.pnote.lock{border-left-color:var(--warn)}
+.pnote.warn{border-left-color:var(--down)}
+.pnote button{margin-left:6px;margin-top:4px}
+button.danger{background:var(--down)!important;border-color:var(--down)!important;color:#fff!important}
+#pName input{font:inherit;width:min(420px,100%);border:1px solid var(--line);border-radius:8px;padding:2px 8px;background:var(--panel);color:var(--ink)}
+.go{background:var(--accent);color:var(--panel);border:1px solid var(--accent);border-radius:8px;padding:9px 16px;font-weight:600;cursor:pointer}
+.pform{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:12px;align-items:start}
+.pform .pf-fund{grid-column:1/-3;width:auto}
+.pform #pType{grid-column:-3/-1;align-self:start}
+.pform #pType button{flex:1;font-size:13px;padding:8px 10px;font-weight:600}
+.pfl{display:flex;flex-direction:column;gap:4px;min-width:0}
+.pfl input{border:1px solid var(--line);background:var(--panel);color:var(--ink);border-radius:8px;padding:9px 10px;font:14px var(--mono);min-width:0;width:100%;box-sizing:border-box}
+.pfl .sub{min-height:1.4em}
+#pPicked{margin-top:6px}
+.pform .go{margin-top:21px}
+.perr{grid-column:1/-1;color:var(--down)}
+.perr:empty{display:none}
+.pk .big{font-size:19px}
+.ptab td:not(.r),.ptab th:not(.r){text-align:left}
+.ptab thead th[data-pk]{cursor:pointer;user-select:none}
+.ptab thead th[data-pk]:hover{color:var(--accent)}
+.ptab tfoot td{font-weight:600;border-bottom:0;border-top:2px solid var(--line)}
+.tag.buy{color:var(--up)} .tag.sell{color:var(--down)}
+.tag.buy,.tag.sell{margin-left:0}
+.plegend{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:12px}
+.plegend i{display:inline-block;width:14px;height:3px;border-radius:2px;vertical-align:middle;margin-right:6px}
+.plegend i.dash{background:repeating-linear-gradient(90deg,var(--muted) 0 4px,transparent 4px 7px)}
+.allocs{display:grid;gap:16px}
+.alloc{display:flex;flex-direction:column;gap:6px}
+.arow{display:grid;grid-template-columns:minmax(0,150px) minmax(0,1fr) 52px;gap:10px;align-items:center;font-size:13px}
+.aname{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.abar{height:8px;background:var(--line);border-radius:4px;overflow:hidden}
+.abar i{display:block;height:100%;border-radius:4px}
+.arow .num{text-align:right}
+.pbk{display:flex;flex-wrap:wrap;gap:8px}
+#pPaste{display:flex;flex-direction:column;gap:8px}
+#pPaste[hidden]{display:none}
+#pCode{width:100%;box-sizing:border-box;border:1px solid var(--line);border-radius:8px;background:var(--panel);color:var(--ink);font:12px var(--mono);padding:8px}
+#pPasteGo{align-self:flex-start}
+@media (max-width:900px){.pform{grid-template-columns:repeat(2,minmax(0,1fr))}.pform .pf-fund,.pform #pType{grid-column:1/-1}}
+@media (max-width:640px){
+  .tabs.big .myport{margin-left:0}
+  .ptab tfoot{display:none}
+  .arow{grid-template-columns:minmax(0,110px) minmax(0,1fr) 48px}
+  .pform .go{grid-column:1/-1;margin-top:0}
+}
 /* ---------- phones: tables become cards ---------- */
 .msort{display:none;align-items:center;gap:6px}
 .msort select{padding:7px 8px}
@@ -389,6 +449,7 @@ footer a{color:var(--accent)}
       <button data-v="prices" aria-pressed="true">Prices &amp; returns</button>
       <button data-v="rank" aria-pressed="false">Fees &amp; ranking</button>
       <button data-v="master" aria-pressed="false">Same master fund</button>
+      <button data-go="portfolio" class="myport" type="button">My portfolio</button>
     </div>
     <span class="msort" id="sortWrap"><span class="sub">Sort by</span><select id="sortSel" aria-label="Sort by"></select><button id="sortDir" type="button"></button></span>
     <label class="trtoggle" title="Adds dividends back, so funds that pay out are not shown as falling on payout day"><input type="checkbox" id="trOn"> Returns include dividends</label>
@@ -433,6 +494,7 @@ footer a{color:var(--accent)}
 
 <main class="wrap fpage" id="fundView" hidden></main>
 <main class="wrap fpage" id="compareView" hidden></main>
+<main class="wrap fpage" id="portView" hidden></main>
 <div class="tray" id="tray" hidden></div>
 <div class="toast" id="toast" role="status" hidden></div>
 
@@ -655,7 +717,7 @@ function bind(){
   $("#divMore").addEventListener("click", () => { divCal.all = !divCal.all; divCal(); });
   $("#oneClass").checked = st.one !== false;
   $("#oneClass").addEventListener("change", e => { st.one = e.target.checked; apply(); });
-  $("#viewTabs").addEventListener("click", e => { const b=e.target.closest("[data-v]"); if(b) setView(b.dataset.v); });
+  $("#viewTabs").addEventListener("click", e => { if (e.target.closest("[data-go]")) { navTo("portfolio"); return; } const b=e.target.closest("[data-v]"); if(b) setView(b.dataset.v); });
   $("#wgrid").addEventListener("input", e => { const k=e.target.dataset.k; if(!k) return; W[k]=+e.target.value; $("#wv_"+k).textContent=W[k]; store.set("weights",W); wSummary(); apply(); });
   $("#more").addEventListener("click", () => { shown += 200; render(); });
   $("#rows").addEventListener("click", e => {
@@ -664,7 +726,7 @@ function bind(){
     if (e.target.closest(".star")) { watch.has(r.key)?watch.delete(r.key):watch.add(r.key); store.set("watch",[...watch]); e.target.setAttribute("aria-pressed",watch.has(r.key)); return; }
     goFund(r);
   });
-  document.addEventListener("keydown", e => { if (e.key==="Escape" && $("#boardView").hidden && document.activeElement?.id !== "cmpAdd") goBack(); });
+  document.addEventListener("keydown", e => { if (e.key==="Escape" && $("#boardView").hidden && !/^(INPUT|TEXTAREA|SELECT)$/.test(document.activeElement?.tagName || "")) goBack(); });
   bindTray();
   let rz = 0; window.addEventListener("resize", () => { cancelAnimationFrame(rz); rz = requestAnimationFrame(() => { if (!$("#fundView").hidden) drawBig(); if (!$("#compareView").hidden) { drawCompare(); if (cmpData) scatter(cmpData.rows, cmpData.stats); } }); });
 }
@@ -949,8 +1011,11 @@ function goFund(r){
 function goBack(){ if (depth === 1) history.back(); else location.hash = ""; }
 function route(){
   const hs = location.hash.slice(1);
-  const show = id => ["boardView","fundView","compareView"].forEach(v => { $("#" + v).hidden = v !== id; });
-  if (hs.startsWith("compare")) {
+  const show = id => ["boardView","fundView","compareView","portView"].forEach(v => { $("#" + v).hidden = v !== id; });
+  if (hs === "portfolio") {
+    cur = null; show("portView"); window.scrollTo(0, 0); showPortfolio();
+    if (route.last !== "portfolio") trackPage("/portfolio", "My portfolio");
+  } else if (hs.startsWith("compare")) {
     const rows = hs.split("--").slice(1).map(s => bySlug[s]).filter(Boolean).slice(0, MAXC);
     cur = null; show("compareView"); showCompare(rows); window.scrollTo(0, 0);
     trackPage("/compare", `Compare ${rows.length} funds`);
@@ -964,7 +1029,7 @@ function route(){
     depth = 0; cur = null; show("boardView"); document.title = baseTitle;
     if (away) { if (st.view === "rank") apply(); else render(); requestAnimationFrame(() => window.scrollTo(0, boardScroll)); }
   }
-  route.last = hs.startsWith("compare") ? "compare" : bySlug[hs] ? "fund" : "board";
+  route.last = hs === "portfolio" ? "portfolio" : hs.startsWith("compare") ? "compare" : bySlug[hs] ? "fund" : "board";
   renderTray();
 }
 
@@ -1020,7 +1085,7 @@ async function showFund(r){
       <span class="nav">${fmtNav(r.nav)}</span>
       <span class="chg">${fmtPct(r.d1)}</span>
       <span class="sub">NAV per unit (THB) on ${thDate(r.date)}${r.sell != null ? ` · offer ${fmtNav(r.sell)} / bid ${fmtNav(r.buy)}` : ""}</span>
-      <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end"><a class="fsbtn" id="fsBtn" hidden target="_blank" rel="noopener" data-fs="amc">Factsheet PDF ↗</a><button class="cmpbtn" id="cmpBtn" aria-pressed="${cmp.includes(r.key)}">${cmp.includes(r.key) ? "✓ In compare" : "+ Compare"}</button>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end"><a class="fsbtn" id="fsBtn" hidden target="_blank" rel="noopener" data-fs="amc">Factsheet PDF ↗</a><button class="cmpbtn" id="portBtn" type="button">＋ My portfolio</button><button class="cmpbtn" id="cmpBtn" aria-pressed="${cmp.includes(r.key)}">${cmp.includes(r.key) ? "✓ In compare" : "+ Compare"}</button>
       <button class="watch" id="watchBtn" style="margin-top:0" aria-pressed="${watch.has(r.key)}">${watch.has(r.key) ? "★ On your watchlist" : "☆ Add to watchlist"}</button></div>
     </div>
   </header>
@@ -1122,6 +1187,7 @@ async function showFund(r){
   </div>`;
 
   $("#back").onclick = goBack;
+  $("#portBtn").onclick = () => { portPrefill = r; navTo("portfolio"); };
   $("#cmpBtn").onclick = e => { toggleCmp(r); const on = cmp.includes(r.key); e.target.setAttribute("aria-pressed", on); e.target.textContent = on ? "✓ In compare" : "+ Compare"; };
   $("#watchBtn").onclick = e => { watch.has(r.key) ? watch.delete(r.key) : watch.add(r.key); store.set("watch", [...watch]);
     e.target.setAttribute("aria-pressed", watch.has(r.key)); e.target.textContent = watch.has(r.key) ? "★ On your watchlist" : "☆ Add to watchlist"; };
@@ -1601,5 +1667,393 @@ function corrTable(rows, stats){
       return c == null ? "<td>–</td>" : `<td style="background:color-mix(in srgb, ${c >= 0 ? "var(--accent)" : "var(--down)"} ${Math.round(Math.abs(c) * 60)}%, var(--panel))">${c.toFixed(2)}</td>`; }).join("")}</tr>`).join("")}
   </tbody></table>`;
 }
+
+/* ---------- My portfolio ----------
+   Saved only in this browser (localStorage), no account. Free version: up to PORT_LIMIT portfolios.
+   When paid plans arrive, raise the limit for subscribers here (or read it from their account). */
+const PORT_LIMIT = 2;
+const PKEY = "tfn.portfolios.v1";
+let PF = null, portPrefill = null, portDel = null, portRestore = null, portSortK = "value", portSortD = -1;
+const todayISO = () => { const d = new Date(Date.now() + 7 * 36e5); return d.toISOString().slice(0, 10); }; // Bangkok date
+const uid = () => Math.random().toString(36).slice(2, 10) + Date.now().toString(36).slice(-4);
+const fmtB = (v, dp = 2) => v == null || !isFinite(v) ? "–" : (v < 0 ? "-" : "") + "฿" + Math.abs(v).toLocaleString("en-US", {minimumFractionDigits: dp, maximumFractionDigits: dp});
+const fmtBpl = v => v == null || !isFinite(v) ? '<span class="flat">–</span>' : `<span class="${v > 0.005 ? "up" : v < -0.005 ? "down" : "flat"}">${v > 0.005 ? "+" : ""}${fmtB(v)}</span>`;
+const fmtU = v => v == null ? "–" : v.toLocaleString("en-US", {minimumFractionDigits: 4, maximumFractionDigits: 4});
+const num = v => { const n = parseFloat(String(v ?? "").replace(/[,฿\s]/g, "")); return isFinite(n) ? n : null; };
+
+function pfLoad(){
+  let d = store.get(PKEY, null);
+  if (!d || !Array.isArray(d.list) || !d.list.length) d = {v: 1, active: "", list: [{id: uid(), name: "My portfolio", created: todayISO(), tx: []}]};
+  if (!d.list.find(p => p.id === d.active)) d.active = d.list[0].id;
+  PF = d; return d;
+}
+function pfSave(){ store.set(PKEY, PF); }
+const pfActive = () => PF.list.find(p => p.id === PF.active) || PF.list[0];
+function cleanTx(t){
+  const type = t.type === "sell" ? "sell" : "buy", units = num(t.units), price = num(t.price), amount = num(t.amount), fee = num(t.fee) || 0;
+  if (!t.fid || !t.cls || !/^\d{4}-\d{2}-\d{2}$/.test(t.date || "") || !(units > 0) || !(amount >= 0)) return null;
+  return {id: String(t.id || uid()).slice(0, 20), fid: String(t.fid).slice(0, 40), cls: String(t.cls).slice(0, 60), name: String(t.name || t.cls).slice(0, 80),
+          type, date: t.date, units, price: price > 0 ? price : amount / units, amount, fee: Math.max(0, fee)};
+}
+const fundRow = t => all.find(x => x.id === t.fid && x.cls === t.cls);
+
+// replay transactions (average-cost method) -> holdings, realised P/L, money put in
+function pfCompute(p, hists){
+  const tx = [...p.tx].sort((a, b) => a.date < b.date ? -1 : a.date > b.date ? 1 : 0);
+  const pos = {}; let realised = 0, bought = 0;
+  for (const t of tx) {
+    const k = t.fid + "|" + t.cls, h = pos[k] || (pos[k] = {k, fid: t.fid, cls: t.cls, name: t.name, units: 0, cost: 0, realised: 0, divs: 0, first: t.date});
+    if (t.type === "buy") { h.units += t.units; h.cost += t.amount; bought += t.amount; }
+    else { const avg = h.units > 0 ? h.cost / h.units : 0, u = Math.min(t.units, h.units); const r = t.amount - u * avg; h.realised += r; realised += r; h.cost -= u * avg; h.units -= u; }
+    if (h.units < 1e-7) { h.units = 0; h.cost = 0; }
+  }
+  // dividends: units held on the book-close date x baht per unit, counted once paid
+  const today = todayISO(), divList = [];
+  for (const h of Object.values(pos)) {
+    const hs = hists && hists[h.fid], dl = ((hs && hs.divs) || {})[h.cls] || [];
+    for (const [bc, pay, val] of dl) {
+      if (bc <= h.first) continue;
+      let u = 0; for (const t of tx) if (t.fid === h.fid && t.cls === h.cls && t.date < bc) u += t.type === "buy" ? t.units : -t.units;
+      if (u <= 1e-7) continue;
+      const amt = u * val, paid = (pay || bc) <= today;
+      divList.push({fid: h.fid, cls: h.cls, name: h.name, bc, pay: pay || bc, val, units: u, amt, paid});
+      if (paid) h.divs += amt;
+    }
+  }
+  const hold = Object.values(pos);
+  let value = 0, cost = 0, day = 0, ter = 0, terBase = 0;
+  for (const h of hold) {
+    const r = all.find(x => x.id === h.fid && x.cls === h.cls); h.row = r;
+    h.nav = r ? r.nav : null; h.value = h.units && h.nav ? h.units * h.nav : (h.units ? h.cost : 0);
+    h.pl = h.units ? h.value - h.cost : 0; h.plp = h.units && h.cost > 0 ? h.pl / h.cost * 100 : null;
+    h.avg = h.units ? h.cost / h.units : null;
+    h.d1v = r && r.d1 != null && h.value ? h.value * r.d1 / (100 + r.d1) : 0;
+    value += h.value; cost += h.cost; day += h.d1v;
+    if (r && r.ter != null && h.value) { ter += h.value * r.ter / 100; terBase += h.value; }
+  }
+  hold.forEach(h => h.w = value ? h.value / value * 100 : 0);
+  const divs = hold.reduce((s, h) => s + h.divs, 0);
+  return {tx, hold, open: hold.filter(h => h.units > 0), value, cost, day, realised, bought, divs, divList, ter, terPct: terBase ? ter / terBase * 100 : null,
+          total: value - cost + realised + divs};
+}
+
+function pfSeries(p, hists){
+  const tx = [...p.tx].sort((a, b) => a.date < b.date ? -1 : 1);
+  if (!tx.length) return [];
+  const start = tx[0].date, keys = [...new Set(tx.map(t => t.fid + "|" + t.cls))];
+  const ser = {}; const dates = new Set();
+  for (const k of keys) { const [fid, cls] = k.split("|"); const h = hists[fid]; const s = ((h && (h.series || h)) || {})[cls] || [];
+    ser[k] = s; s.forEach(x => { if (x[0] >= start) dates.add(x[0]); }); }
+  const ds = [...dates].sort(); if (ds.length < 2) return [];
+  const units = {}, cost = {}, idx = {}, last = {}; let ti = 0; const out = [];
+  for (const d of ds) {
+    while (ti < tx.length && tx[ti].date <= d) { const t = tx[ti++], k = t.fid + "|" + t.cls; units[k] = units[k] || 0; cost[k] = cost[k] || 0;
+      if (t.type === "buy") { units[k] += t.units; cost[k] += t.amount; } else { const avg = units[k] ? cost[k] / units[k] : 0, u = Math.min(t.units, units[k]); cost[k] -= u * avg; units[k] -= u; } }
+    let v = 0, c = 0;
+    for (const k of keys) { const s = ser[k]; let i = idx[k] || 0; while (i < s.length && s[i][0] <= d) { last[k] = s[i][1]; i++; } idx[k] = i;
+      if (units[k] > 1e-7) { v += units[k] * (last[k] || (cost[k] / units[k])); c += cost[k]; } }
+    out.push([d, v, c]);
+  }
+  return out;
+}
+
+function portChart(s){
+  const box = $("#pChart"); if (!box) return;
+  if (s.length < 2) { box.innerHTML = '<div class="sub">The value chart appears once your funds have at least two days of prices after your first purchase.</div>'; return; }
+  const Wd = Math.max(300, Math.round(box.clientWidth)), H = Wd < 560 ? 220 : 280, L = 8, R = 78, T = 14, B = 28;
+  const vals = s.flatMap(x => [x[1], x[2]]), lo = Math.min(...vals), hi = Math.max(...vals), pad = (hi - lo) * .08 || hi * .01 || 1;
+  const y0 = Math.max(0, lo - pad), y1 = hi + pad, t0 = Date.parse(s[0][0]), t1 = Date.parse(s.at(-1)[0]);
+  const X = t => L + (t - t0) / (t1 - t0) * (Wd - L - R), Y = v => T + (y1 - v) * (H - T - B) / (y1 - y0);
+  const line = i => s.map(x => X(Date.parse(x[0])).toFixed(1) + "," + Y(x[i]).toFixed(1)).join(" ");
+  const {ticks} = niceTicks(y0, y1, Wd < 560 ? 3 : 4);
+  const fmtT = v => v >= 1e6 ? (v / 1e6).toFixed(v >= 1e7 ? 0 : 1) + "m" : v >= 1e3 ? (v / 1e3).toFixed(v >= 1e4 ? 0 : 1) + "k" : Math.round(v);
+  const xt = xTicks(t0, t1, Wd < 560).filter(([t]) => X(t) > L + 22 && X(t) < Wd - 40);
+  const up = s.at(-1)[1] >= s.at(-1)[2], col = up ? "var(--up)" : "var(--down)";
+  box.innerHTML = `<svg viewBox="0 0 ${Wd} ${H}" width="${Wd}" height="${H}" role="img" aria-label="Portfolio value and money invested over time">
+    ${ticks.map(v => `<line x1="${L}" x2="${Wd - R}" y1="${Y(v)}" y2="${Y(v)}" stroke="var(--line)"/><text x="${Wd - R + 6}" y="${Y(v) + 4}" font-size="11" fill="var(--muted)" font-family="var(--mono)">฿${fmtT(v)}</text>`).join("")}
+    ${xt.map(([t, l]) => `<text x="${X(t)}" y="${H - 8}" font-size="11" fill="var(--muted)" text-anchor="middle">${l}</text>`).join("")}
+    <polygon points="${line(1)} ${X(t1).toFixed(1)},${Y(y0)} ${X(t0).toFixed(1)},${Y(y0)}" fill="${col}" opacity=".08"/>
+    <polyline points="${line(2)}" fill="none" stroke="var(--muted)" stroke-width="1.5" stroke-dasharray="4 4"/>
+    <polyline points="${line(1)}" fill="none" stroke="${col}" stroke-width="2"/>
+  </svg>`;
+  $("#pLegend").innerHTML = `<span><i style="background:${col}"></i>Market value ${fmtB(s.at(-1)[1], 0)}</span><span><i class="dash"></i>Money invested ${fmtB(s.at(-1)[2], 0)}</span><span class="sub">Dividends paid out in cash are not in the line.</span>`;
+}
+
+function allocBars(title, groups){
+  const list = Object.entries(groups).sort((a, b) => b[1] - a[1]), tot = list.reduce((s, x) => s + x[1], 0) || 1;
+  return `<div class="alloc"><div class="lbl">${title}</div>${list.map(([k, v], i) => `<div class="arow"><span class="aname">${esc(k)}</span><span class="abar"><i style="width:${(v / tot * 100).toFixed(1)}%;background:var(--c${i % 10})"></i></span><span class="num">${(v / tot * 100).toFixed(1)}%</span></div>`).join("")}</div>`;
+}
+
+const PCOLS = [
+  ["name", "Fund", 1], ["units", "Units", -1], ["avg", "Avg cost / unit", -1], ["nav", "NAV", -1], ["value", "Value", -1], ["pl", "Profit / loss", -1],
+  ["plp", "P/L %", -1], ["w", "Weight", -1], ["d1", "1 day", -1], ["divs", "Dividends", -1], ["ter", "TER", 1]];
+
+async function showPortfolio(){
+  pfLoad(); const p = pfActive();
+  document.title = "My portfolio · Thai Fund NAV Board";
+  const fids = [...new Set(p.tx.map(t => t.fid))];
+  const atLimit = PF.list.length >= PORT_LIMIT;
+  $("#portView").innerHTML = `
+  <nav class="crumb"><button class="back" id="pBack">← All funds</button><span class="sub">Thai Fund NAV Board · My portfolio</span></nav>
+  <header class="fhead"><div style="min-width:0">
+    <div class="lbl">My portfolio · saved on this device</div>
+    <h1 class="fname" id="pName">${esc(p.name)}</h1>
+    <div class="sub">No sign-up needed. Your holdings stay in this browser only and are never sent to us. Use <a href="#pBackup">Backup</a> to keep a copy or move it to another phone or computer.</div>
+  </div></header>
+  <div class="pbar">
+    <div class="tabs" id="pList">${PF.list.map(x => `<button data-pid="${esc(x.id)}" aria-pressed="${x.id === p.id}">${esc(x.name)}<span class="sub"> · ${new Set(x.tx.map(t => t.fid + t.cls)).size} funds</span></button>`).join("")}
+      <button id="pNew" class="${atLimit ? "locked" : ""}" title="${atLimit ? `The free version holds up to ${PORT_LIMIT} portfolios` : "Create another portfolio"}">${atLimit ? "＋ More portfolios · paid plan" : "＋ New portfolio"}</button></div>
+    <span class="pacts"><button id="pRename" type="button">Rename</button><button id="pDelete" type="button">Delete</button></span>
+  </div>
+  <div id="pNote"></div>
+
+  <section class="kpis pk" id="pKpis"><div><div class="lbl">Market value</div><div class="big num">…</div></div></section>
+
+  <section class="panel">
+    <div class="phead"><h3>Add a purchase or sale</h3><span class="sub">Copy the numbers from your fund statement or app. NAV fills in automatically for the date you pick.</span></div>
+    <form id="pForm" class="pform" autocomplete="off">
+      <div class="addbox pf-fund"><label class="search"><span aria-hidden="true">⌕</span><input id="pFund" type="search" placeholder="Search a fund: code, name or AMC" autocomplete="off"></label><div class="addres" id="pRes" hidden></div>
+        <div class="sub" id="pPicked">No fund chosen yet.</div></div>
+      <div class="tabs" id="pType"><button type="button" data-t="buy" aria-pressed="true">Buy</button><button type="button" data-t="sell" aria-pressed="false">Sell</button></div>
+      <label class="pfl"><span class="lbl">Date</span><input id="pDate" type="date" max="${todayISO()}" value="${todayISO()}"></label>
+      <label class="pfl"><span class="lbl" id="pAmtL">Amount paid (฿)</span><input id="pAmt" inputmode="decimal" placeholder="10,000"></label>
+      <label class="pfl"><span class="lbl">NAV per unit</span><input id="pPrice" inputmode="decimal" placeholder="auto"><span class="sub" id="pPriceNote"></span></label>
+      <label class="pfl"><span class="lbl">Units</span><input id="pUnits" inputmode="decimal" placeholder="auto"><span class="sub" id="pHeld"></span></label>
+      <label class="pfl"><span class="lbl">Fee (฿, optional)</span><input id="pFee" inputmode="decimal" placeholder="0"></label>
+      <button class="go" id="pAdd" type="submit">Add to portfolio</button>
+      <div class="sub perr" id="pErr" role="alert"></div>
+    </form>
+  </section>
+
+  <section class="panel">
+    <div class="phead"><h3>Holdings</h3><span class="sub" id="pAsOf"></span></div>
+    <div class="ftwrap"><table class="ftable mtab ptab" id="pHold"></table></div>
+  </section>
+
+  <div class="cols">
+    <section class="panel"><div class="phead"><h3>Value over time</h3></div><div class="chartbox" id="pChart"><div class="sub">Loading price history…</div></div><div class="plegend" id="pLegend"></div></section>
+    <section class="panel"><h3>Allocation</h3><div id="pAlloc" class="allocs"></div><div class="sub" id="pFees"></div></section>
+  </div>
+
+  <section class="panel"><div class="phead"><h3>Dividends received</h3><span class="sub">Estimated from the SEC dividend record: units you held on the book-close date × baht per unit, before tax.</span></div>
+    <div class="ftwrap" id="pDivs"></div></section>
+
+  <section class="panel"><div class="phead"><h3>Transactions</h3><span class="sub" id="pTxN"></span></div>
+    <div class="ftwrap" id="pTx"></div></section>
+
+  <section class="panel" id="pBackup"><h3>Backup &amp; move to another device</h3>
+    <div class="sub">Your portfolio lives only in this browser. Clearing browsing data or switching phones will lose it, so download a backup now and then. ${store.get("tfn.lastBackup", "") ? `Last backup: ${thDate(store.get("tfn.lastBackup", ""))}.` : "No backup yet."}</div>
+    <div class="pbk">
+      <button id="pExport" type="button">Download backup file</button>
+      <button id="pCopy" type="button">Copy backup code</button>
+      <label class="filebtn">Restore from file<input id="pFile" type="file" accept=".json,application/json,text/plain" hidden></label>
+      <button id="pPasteBtn" type="button">Restore from code</button>
+    </div>
+    <div id="pPaste" hidden><textarea id="pCode" rows="4" placeholder="Paste the backup code here"></textarea><button id="pPasteGo" type="button">Restore</button></div>
+    <div id="pRestoreAsk"></div>
+  </section>
+  <p class="sub">Tracking tool only, not investment advice. Values use the latest NAV published by the SEC, which can be 1–2 business days old.</p>`;
+
+  bindPortfolio();
+  renderPortfolio(p, {});
+  if (portPrefill) { pickFund(portPrefill); portPrefill = null; $("#pAmt").focus(); }
+  const hs = await Promise.all(fids.map(loadHist));
+  if (pfActive() !== p || $("#portView").hidden) return;
+  const hists = {}; fids.forEach((f, i) => hists[f] = hs[i]);
+  renderPortfolio(p, hists);
+}
+
+function renderPortfolio(p, hists){
+  renderPortfolio.last = hists;
+  const c = pfCompute(p, hists), open = c.open;
+  const pc = c.cost ? (c.value - c.cost) / c.cost * 100 : null;
+  $("#pKpis").innerHTML = `
+    <div><div class="lbl">Market value</div><div class="big num">${fmtB(c.value)}</div><div class="sub">${open.length} fund${open.length === 1 ? "" : "s"}</div></div>
+    <div><div class="lbl">Invested (cost)</div><div class="big num">${fmtB(c.cost)}</div><div class="sub">in funds you still hold</div></div>
+    <div><div class="lbl">Unrealised profit</div><div class="big num">${fmtBpl(c.value - c.cost)}</div><div class="sub">${fmtPct(pc)}</div></div>
+    <div><div class="lbl">Realised profit</div><div class="big num">${fmtBpl(c.realised)}</div><div class="sub">from sales</div></div>
+    <div><div class="lbl">Dividends received</div><div class="big num">${fmtB(c.divs)}</div><div class="sub">estimated, before tax</div></div>
+    <div><div class="lbl">Total gain</div><div class="big num">${fmtBpl(c.total)}</div><div class="sub">latest day ${fmtBpl(c.day)}</div></div>`;
+  const dates = open.map(h => h.row && h.row.date).filter(Boolean).sort();
+  $("#pAsOf").textContent = dates.length ? `Prices as of ${thDate(dates.at(-1))}${dates[0] !== dates.at(-1) ? ` (some funds ${thDate(dates[0])})` : ""}` : "";
+  // holdings table
+  const get = (h, k) => k === "name" ? (h.row ? h.row.name : h.name) : k === "d1" ? (h.row ? h.row.d1 : null) : k === "ter" ? (h.row ? h.row.ter : null) : h[k];
+  const rows = open.slice().sort((a, b) => { const x = get(a, portSortK), y = get(b, portSortK);
+    if (x == null) return 1; if (y == null) return -1; return (typeof x === "string" ? x.localeCompare(y) : x - y) * portSortD; });
+  $("#pHold").innerHTML = !open.length ? `<tbody><tr><td class="sub" style="padding:14px">${p.tx.length ? "You have sold everything in this portfolio." : "No funds yet. Search for a fund above and add your first purchase."}</td></tr></tbody>` :
+    `<thead><tr>${PCOLS.map(([k, l]) => `<th data-pk="${k}" class="${k === "name" ? "" : "r"}" aria-sort="${portSortK === k ? (portSortD > 0 ? "ascending" : "descending") : "none"}">${l}</th>`).join("")}</tr></thead>
+    <tbody>${rows.map(h => `<tr data-go="${h.row ? esc(slugOf(h.row)) : ""}">
+      <td><b>${esc(h.row ? h.row.name : h.name)}</b>${h.row ? `<span class="sub" style="display:block">${esc(h.row.amc)} · ${esc(h.row.theme || h.row.cat)}</span>` : '<span class="sub" style="display:block">No longer listed</span>'}</td>
+      <td class="r num">${fmtU(h.units)}</td><td class="r num">${fmtNav(h.avg)}</td><td class="r num">${fmtNav(h.nav)}</td>
+      <td class="r num"><b>${fmtB(h.value)}</b></td><td class="r num">${fmtBpl(h.pl)}</td><td class="r num">${fmtPct(h.plp)}</td>
+      <td class="r num">${h.w.toFixed(1)}%</td><td class="r num">${fmtPct(h.row ? h.row.d1 : null)}</td><td class="r num">${h.divs ? fmtB(h.divs) : "–"}</td>
+      <td class="r num">${h.row && h.row.ter != null ? fmtFee(h.row.ter) : "–"}</td></tr>`).join("")}</tbody>
+    <tfoot><tr><td><b>Total</b></td><td></td><td></td><td></td><td class="r num"><b>${fmtB(c.value)}</b></td><td class="r num">${fmtBpl(c.value - c.cost)}</td><td class="r num">${fmtPct(pc)}</td><td class="r num">100%</td><td></td><td class="r num">${c.divs ? fmtB(c.divs) : "–"}</td><td class="r num">${c.terPct != null ? fmtFee(c.terPct) : ""}</td></tr></tfoot>`;
+  // allocation
+  const by = f => { const g = {}; open.forEach(h => { const k = f(h) || "Other"; g[k] = (g[k] || 0) + h.value; }); return g; };
+  $("#pAlloc").innerHTML = !open.length ? '<div class="sub">Add funds to see how your money is spread.</div>' :
+    allocBars("Theme / asset class", by(h => h.row && (h.row.theme || h.row.cat))) + allocBars("Region", by(h => h.row && h.row.region)) + allocBars("Fund company", by(h => h.row && h.row.amc));
+  $("#pFees").innerHTML = c.terPct != null ? `Fund fees (TER) take about <b>${fmtB(c.ter, 0)} a year</b> from this portfolio, ${fmtFee(c.terPct)} on average. They are already deducted from NAV.` : "";
+  // dividends
+  const dl = c.divList.slice().sort((a, b) => a.pay < b.pay ? 1 : -1);
+  $("#pDivs").innerHTML = !dl.length ? `<div class="sub">${Object.keys(hists).length || !p.tx.length ? "No dividends from these funds since you bought them." : "Loading…"}</div>` :
+    `<table class="ftable mtab ptab"><thead><tr><th>Fund</th><th>Book close</th><th>Paid</th><th class="r">Units held</th><th class="r">฿ per unit</th><th class="r">Amount</th></tr></thead><tbody>${
+    dl.map(d => `<tr><td><b>${esc(d.name)}</b>${d.paid ? "" : ' <span class="tag">upcoming</span>'}</td><td>${thDate(d.bc)}</td><td>${thDate(d.pay)}</td><td class="r num">${fmtU(d.units)}</td><td class="r num">${d.val.toFixed(4)}</td><td class="r num">${fmtB(d.amt)}</td></tr>`).join("")}</tbody></table>`;
+  // transactions
+  const tl = p.tx.slice().sort((a, b) => a.date < b.date ? 1 : a.date > b.date ? -1 : 0);
+  $("#pTxN").textContent = tl.length ? `${tl.length} transaction${tl.length === 1 ? "" : "s"}` : "";
+  $("#pTx").innerHTML = !tl.length ? '<div class="sub">None yet.</div>' :
+    `<table class="ftable mtab ptab"><thead><tr><th>Fund</th><th>Date</th><th>Type</th><th class="r">Units</th><th class="r">NAV</th><th class="r">Amount</th><th class="r">Fee</th><th></th></tr></thead><tbody>${
+    tl.map(t => `<tr><td><b>${esc((fundRow(t) || {}).name || t.name)}</b></td><td>${thDate(t.date)}</td><td><span class="tag ${t.type}">${t.type === "buy" ? "Buy" : "Sell"}</span></td>
+      <td class="r num">${fmtU(t.units)}</td><td class="r num">${fmtNav(t.price)}</td><td class="r num">${fmtB(t.amount)}</td><td class="r num">${t.fee ? fmtB(t.fee) : "–"}</td>
+      <td class="r"><button class="txdel" data-del="${esc(t.id)}" type="button" aria-label="Delete this transaction">${portDel === t.id ? "Confirm delete" : "Delete"}</button></td></tr>`).join("")}</tbody></table>`;
+  if (Object.keys(hists).length || !p.tx.length) portChart(pfSeries(p, hists));
+}
+
+let pPick = null, pType = "buy", pEdited = "amt";
+function pickFund(r){
+  pPick = r; $("#pFund").value = r.name; $("#pRes").hidden = true;
+  $("#pPicked").innerHTML = `<b>${esc(r.name)}</b> · ${esc(r.amc)} · ${esc(r.th || r.en)} · latest NAV ${fmtNav(r.nav)}`;
+  fillPrice(); showHeld();
+}
+function showHeld(){
+  const el = $("#pHeld"); if (!el) return;
+  if (!pPick || pType !== "sell") { el.innerHTML = ""; return; }
+  const c = pfCompute(pfActive(), renderPortfolio.last || {}), h = c.open.find(x => x.fid === pPick.id && x.cls === pPick.cls);
+  el.innerHTML = h ? `You hold ${fmtU(h.units)} · <a href="#" id="pAll">sell all</a>` : "You don't hold this fund here.";
+  const a = $("#pAll"); if (a) a.onclick = e => { e.preventDefault(); $("#pUnits").value = h.units.toFixed(4); pEdited = "units"; recalc(); };
+}
+async function fillPrice(){
+  if (!pPick) return;
+  const d = $("#pDate").value, r = pPick, note = $("#pPriceNote");
+  if (!d || (r.date && d >= r.date)) { $("#pPrice").value = r.nav ? r.nav.toFixed(4) : ""; note.textContent = r.date ? `NAV of ${thDate(r.date)}` : ""; recalc(); return; }
+  note.textContent = "Looking up NAV…";
+  const h = await loadHist(r.id); if (pPick !== r || $("#pDate").value !== d) return;
+  const s = ((h && (h.series || h)) || {})[r.cls] || []; let best = null;
+  for (const x of s) { if (x[0] <= d) best = x; else break; }
+  if (best && (Date.parse(d) - Date.parse(best[0])) < 10 * 864e5) { $("#pPrice").value = best[1].toFixed(4); note.textContent = `NAV of ${thDate(best[0])}`; }
+  else { $("#pPrice").value = ""; note.textContent = "No NAV on file for this date. Type it from your statement."; }
+  recalc();
+}
+function recalc(){
+  const price = num($("#pPrice").value), fee = num($("#pFee").value) || 0;
+  if (!price) return;
+  if (pEdited === "amt") { const a = num($("#pAmt").value); if (a != null) $("#pUnits").value = Math.max(0, pType === "buy" ? (a - fee) / price : (a + fee) / price).toFixed(4); }
+  else { const u = num($("#pUnits").value); if (u != null) $("#pAmt").value = (pType === "buy" ? u * price + fee : u * price - fee).toFixed(2); }
+}
+
+function pNote(html, cls = ""){ $("#pNote").innerHTML = html ? `<div class="pnote ${cls}">${html}</div>` : ""; }
+
+function bindPortfolio(){
+  $("#pBack").onclick = goBack;
+  $("#pList").onclick = e => {
+    const b = e.target.closest("[data-pid]");
+    if (b) { PF.active = b.dataset.pid; pfSave(); portDel = null; showPortfolio(); return; }
+    if (e.target.closest("#pNew")) {
+      if (PF.list.length >= PORT_LIMIT) {
+        track("portfolio-limit", {count: PF.list.length});
+        pNote(`<b>The free version holds up to ${PORT_LIMIT} portfolios.</b> More portfolios will be part of the upcoming paid plan. For now, you can rename or delete a portfolio to make room.`, "lock");
+        return;
+      }
+      const p = {id: uid(), name: `Portfolio ${PF.list.length + 1}`, created: todayISO(), tx: []};
+      PF.list.push(p); PF.active = p.id; pfSave(); track("portfolio-create", {count: PF.list.length}); showPortfolio();
+      setTimeout(() => $("#pRename").click(), 50);
+    }
+  };
+  $("#pRename").onclick = () => {
+    const p = pfActive(), h = $("#pName");
+    h.innerHTML = `<input id="pNameIn" maxlength="40" value="${esc(p.name)}" aria-label="Portfolio name"> <button id="pNameOk" type="button" class="go">Save</button>`;
+    const inp = $("#pNameIn"); inp.focus(); inp.select();
+    const ok = () => { const v = inp.value.trim().slice(0, 40); if (v) { p.name = v; pfSave(); } showPortfolio(); };
+    $("#pNameOk").onclick = ok; inp.onkeydown = e => { if (e.key === "Enter") ok(); if (e.key === "Escape") showPortfolio(); };
+  };
+  $("#pDelete").onclick = () => {
+    const p = pfActive();
+    pNote(`Delete <b>${esc(p.name)}</b> and its ${p.tx.length} transaction${p.tx.length === 1 ? "" : "s"}? This cannot be undone. <button id="pDelYes" class="danger" type="button">Yes, delete</button> <button id="pDelNo" type="button">Cancel</button>`, "warn");
+    $("#pDelNo").onclick = () => pNote("");
+    $("#pDelYes").onclick = () => {
+      PF.list = PF.list.filter(x => x.id !== p.id);
+      if (!PF.list.length) PF.list.push({id: uid(), name: "My portfolio", created: todayISO(), tx: []});
+      PF.active = PF.list[0].id; pfSave(); track("portfolio-delete", {}); showPortfolio();
+    };
+  };
+  const inp = $("#pFund"), res = $("#pRes");
+  inp.oninput = () => { pPick = null; $("#pPicked").textContent = "No fund chosen yet."; const q = inp.value.trim().toLowerCase(); if (!q) { res.hidden = true; return; }
+    const hits = all.filter(r => r.hay.includes(q)).sort((a, b) => (b.aum || 0) - (a.aum || 0)).slice(0, 8);
+    res.innerHTML = hits.length ? hits.map(r => `<button type="button" data-k="${esc(r.key)}"><b>${esc(r.name)}</b><span class="sub">${esc(r.amc)} · ${esc(r.th || r.en)}</span></button>`).join("") : '<div class="sub" style="padding:10px">No match.</div>';
+    res.hidden = false; };
+  res.onclick = e => { const b = e.target.closest("[data-k]"); if (b) pickFund(all.find(x => x.key === b.dataset.k)); };
+  $("#pType").onclick = e => { const b = e.target.closest("[data-t]"); if (!b) return; pType = b.dataset.t;
+    $("#pType").querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x === b));
+    $("#pAmtL").textContent = pType === "buy" ? "Amount paid (฿)" : "Amount received (฿)"; $("#pAdd").textContent = pType === "buy" ? "Add to portfolio" : "Record sale"; showHeld(); recalc(); };
+  $("#pDate").onchange = fillPrice;
+  $("#pAmt").oninput = () => { pEdited = "amt"; recalc(); };
+  $("#pUnits").oninput = () => { pEdited = "units"; recalc(); };
+  $("#pPrice").oninput = recalc; $("#pFee").oninput = recalc;
+  $("#pForm").onsubmit = e => {
+    e.preventDefault(); const err = $("#pErr"); err.textContent = "";
+    if (!pPick) { err.textContent = "Choose a fund from the search list first."; return; }
+    const d = $("#pDate").value, price = num($("#pPrice").value), units = num($("#pUnits").value), amount = num($("#pAmt").value), fee = num($("#pFee").value) || 0;
+    if (!d || d > todayISO()) { err.textContent = "Pick a date that is today or earlier."; return; }
+    if (!(price > 0)) { err.textContent = "Enter the NAV per unit."; return; }
+    if (!(units > 0) || !(amount > 0)) { err.textContent = "Enter the amount or the number of units."; return; }
+    const p = pfActive();
+    if (pType === "sell") {
+      const c = pfCompute({tx: p.tx.filter(t => t.date <= d)}, {}), h = c.open.find(x => x.fid === pPick.id && x.cls === pPick.cls);
+      if (!h || units > h.units + 1e-6) { err.textContent = `You held ${h ? fmtU(h.units) : "0"} units of this fund on that date.`; return; }
+    }
+    const t = cleanTx({fid: pPick.id, cls: pPick.cls, name: pPick.name, type: pType, date: d, units, price, amount, fee});
+    p.tx.push(t); pfSave(); track("portfolio-add", {type: pType, fund: pPick.name});
+    flash(`${pType === "buy" ? "Added" : "Sale recorded"}: ${pPick.name}`);
+    showPortfolio();
+  };
+  $("#portView").onclick = e => {
+    const th = e.target.closest("#pHold th[data-pk]");
+    if (th) { const k = th.dataset.pk; if (portSortK === k) portSortD = -portSortD; else { portSortK = k; portSortD = PCOLS.find(x => x[0] === k)[2]; }
+      renderPortfolio(pfActive(), renderPortfolio.last || {}); return; }
+    const del = e.target.closest("[data-del]");
+    if (del) { const id = del.dataset.del;
+      if (portDel !== id) { portDel = id; renderPortfolio(pfActive(), renderPortfolio.last || {}); clearTimeout(bindPortfolio.t); bindPortfolio.t = setTimeout(() => { if (portDel === id) { portDel = null; if (!$("#portView").hidden) renderPortfolio(pfActive(), renderPortfolio.last || {}); } }, 4000); return; }
+      const p = pfActive(); p.tx = p.tx.filter(t => t.id !== id); portDel = null; pfSave(); showPortfolio(); return; }
+    const tr = e.target.closest("#pHold tbody tr[data-go]");
+    if (tr && tr.dataset.go && !e.target.closest("a,button")) navTo(tr.dataset.go);
+  };
+  // backup & restore
+  const payload = () => JSON.stringify({app: "thai-fund-nav", kind: "portfolios", v: 1, saved: new Date().toISOString(), list: PF.list});
+  const backedUp = () => { store.set("tfn.lastBackup", todayISO()); };
+  $("#pExport").onclick = () => {
+    const blob = new Blob([payload()], {type: "application/json"}), a = document.createElement("a");
+    a.href = URL.createObjectURL(blob); a.download = `my-fund-portfolio-${todayISO()}.json`; document.body.appendChild(a); a.click();
+    setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 1000); backedUp(); track("portfolio-backup", {how: "file"}); flash("Backup file downloaded");
+  };
+  $("#pCopy").onclick = async () => {
+    const code = btoa(unescape(encodeURIComponent(payload())));
+    try { await navigator.clipboard.writeText(code); flash("Backup code copied. Paste it somewhere safe, e.g. LINE Keep or notes."); backedUp(); track("portfolio-backup", {how: "code"}); }
+    catch { $("#pPaste").hidden = false; $("#pCode").value = code; $("#pCode").select(); flash("Select and copy the code shown below"); }
+  };
+  $("#pPasteBtn").onclick = () => { $("#pPaste").hidden = !$("#pPaste").hidden; $("#pCode").value = ""; $("#pCode").focus(); };
+  $("#pPasteGo").onclick = () => askRestore($("#pCode").value);
+  $("#pFile").onchange = e => { const f = e.target.files[0]; if (!f) return; const rd = new FileReader(); rd.onload = () => askRestore(String(rd.result)); rd.readAsText(f); e.target.value = ""; };
+}
+
+function parseBackup(text){
+  text = String(text || "").trim(); let d = null;
+  try { d = JSON.parse(text); } catch { try { d = JSON.parse(decodeURIComponent(escape(atob(text.replace(/\s+/g, ""))))); } catch {} }
+  if (!d || !Array.isArray(d.list)) return null;
+  const list = d.list.map(p => ({id: String(p.id || uid()).slice(0, 20), name: String(p.name || "Portfolio").slice(0, 40), created: String(p.created || todayISO()).slice(0, 10),
+    tx: (Array.isArray(p.tx) ? p.tx : []).map(cleanTx).filter(Boolean)})).filter(p => p.tx.length || p.name);
+  return list.length ? list : null;
+}
+function askRestore(text){
+  const list = parseBackup(text), box = $("#pRestoreAsk");
+  if (!list) { box.innerHTML = '<div class="pnote warn">That doesn\'t look like a backup from this website. Check you copied the whole code or picked the right file.</div>'; return; }
+  const keep = list.slice(0, PORT_LIMIT), n = keep.reduce((s, p) => s + p.tx.length, 0);
+  box.innerHTML = `<div class="pnote warn">Replace the portfolios on this device with the backup: <b>${keep.map(p => esc(p.name)).join(", ")}</b> (${n} transactions)?
+    ${list.length > PORT_LIMIT ? `<br>The backup has ${list.length} portfolios; the free version keeps the first ${PORT_LIMIT}.` : ""}
+    <button id="pRsYes" class="danger" type="button">Yes, restore</button> <button id="pRsNo" type="button">Cancel</button></div>`;
+  $("#pRsNo").onclick = () => { box.innerHTML = ""; };
+  $("#pRsYes").onclick = () => { PF = {v: 1, active: keep[0].id, list: keep}; pfSave(); track("portfolio-restore", {portfolios: keep.length}); flash("Portfolio restored"); showPortfolio(); };
+}
+
 })();
 </script>
