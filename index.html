@@ -294,6 +294,41 @@ sup.fs{color:var(--accent);font-weight:600;margin-left:1px}
 .hpill.Hedged{border-color:var(--c0);color:var(--c0)}
 .hpill.Dynamic{border-color:var(--c4);color:var(--c4)}
 .cmpnote{border-left:3px solid var(--accent)}
+/* ---------- phones: tables become cards ---------- */
+.msort{display:none;align-items:center;gap:6px}
+.msort select{padding:7px 8px}
+.msort button{border:1px solid var(--line);background:var(--panel);border-radius:8px;padding:7px 10px;cursor:pointer;font-size:12px}
+.swipe{display:none}
+@media (max-width:640px){
+  .controls{position:static}
+  #topScroll{display:none!important}
+  .msort{display:inline-flex}
+  .swipe{display:inline}
+  .board{overflow-x:visible;border:0;background:transparent;border-radius:0}
+  :is(.board table, table.mtab, table.ctable, .divcal table){min-width:0!important;width:100%}
+  :is(.board table, table.mtab, table.ctable, .divcal table) thead{display:none}
+  :is(.board table, table.mtab, table.ctable, .divcal table) tbody{display:flex;flex-direction:column;gap:8px}
+  :is(.board table, table.mtab, table.ctable, .divcal table) tbody tr{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px 10px;padding:12px;border:1px solid var(--line);border-radius:10px;background:var(--panel)}
+  :is(.board table, table.mtab, table.ctable, .divcal table) tbody tr[aria-current="true"]{background:var(--accent-soft);border-color:var(--accent)}
+  :is(.board table, table.mtab, table.ctable, .divcal table) td{display:flex;flex-direction:column;justify-content:flex-start;border:0!important;padding:0!important;text-align:left!important;white-space:normal;min-width:0;background:transparent!important;font-size:14px}
+  :is(.board table, table.mtab, table.ctable, .divcal table) td::before{content:attr(data-label);font:600 10px/1.4 var(--body);letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+  :is(.board table, table.mtab, table.ctable, .divcal table) td:first-child{grid-column:1/-1;display:block}
+  :is(.board table, table.mtab, table.ctable, .divcal table) td:first-child::before{content:none}
+  .board td.fund{position:static;box-shadow:none;max-width:none;min-width:0}
+  .board td.fund span[style*="block"]{font-size:12px}
+  .mstats{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .ctab{font-size:12px}
+  .ctab th,.ctab td{padding:6px 8px}
+  .ctab .mcol{min-width:96px;max-width:112px;white-space:normal}
+  .ctab .fcol a{font-size:13px}
+  .ctab thead th{font-size:12px}
+  .tabs{flex-wrap:wrap}
+  .tabs button{padding:6px 9px}
+  .tray{padding-block:8px}
+  .traychips{display:none}
+  .trayin{flex-wrap:nowrap;justify-content:space-between}
+  .trayin .go{flex:1 1 auto}
+}
 footer{font-size:12px;color:var(--muted);line-height:1.6}
 footer a{color:var(--accent)}
 
@@ -351,6 +386,7 @@ footer a{color:var(--accent)}
       <button data-v="rank" aria-pressed="false">Fees &amp; ranking</button>
       <button data-v="master" aria-pressed="false">Same master fund</button>
     </div>
+    <span class="msort" id="sortWrap"><span class="sub">Sort by</span><select id="sortSel" aria-label="Sort by"></select><button id="sortDir" type="button"></button></span>
     <label class="trtoggle" title="Adds dividends back, so funds that pay out are not shown as falling on payout day"><input type="checkbox" id="trOn"> Returns include dividends</label>
     <label class="sub" id="oneWrap" hidden><input type="checkbox" id="oneClass" checked> One class per fund</label>
     <span class="sub" id="rankNote" hidden>Score ranks funds against the others currently shown. Filter to one theme first to compare like with like.</span>
@@ -606,6 +642,8 @@ function bind(){
   $("#head").addEventListener("click", e => { const th = e.target.closest("th[data-k]"); if(!th) return; const k = th.dataset.k;
     const low = ["name","amc","ter","mgmt","load","sd3y","risk"].includes(k);
     st.dir = st.sort===k ? -st.dir : (low?1:-1); st.sort = k; apply(); });
+  $("#sortSel").addEventListener("change", e => { const k = e.target.value; st.sort = k; st.dir = ["name","amc","ter","mgmt","load","sd3y","risk"].includes(k) ? 1 : -1; apply(); });
+  $("#sortDir").addEventListener("click", () => { st.dir = -st.dir; apply(); });
   $("#trOn").checked = st.tr !== false;
   $("#trOn").addEventListener("change", e => { st.tr = e.target.checked; applyTR(); tiles(); apply(); });
   $("#divRows").addEventListener("click", e => { const tr = e.target.closest("tr[data-k]"); if (tr) goFund(all.find(x => x.key === tr.dataset.k)); });
@@ -633,7 +671,7 @@ function apply(){
     (!st.pick || inPick(r, st.pick)) && (!st.region || r.region===st.region) &&
     (!st.type || r.types.includes(st.type)) && (!st.cat || r.cat===st.cat) && (!st.tax || r.tax===st.tax));
   const isM = st.view === "master";
-  $(".board").hidden = isM; $("#masterList").hidden = !isM;
+  $(".board").hidden = isM; $("#masterList").hidden = !isM; $("#sortWrap").style.visibility = isM ? "hidden" : "";
   if (isM) {
     const filtered = st.q||st.amc||st.pick||st.region||st.type||st.cat||st.tax;
     $("#reset").hidden = !filtered; $("#count").textContent = ""; $("#more").hidden = true;
@@ -649,6 +687,9 @@ function apply(){
   const k = st.sort, d = st.dir;
   view.sort((a,b) => { const x=a[k], y=b[k]; if(x==null&&y==null) return 0; if(x==null) return 1; if(y==null) return -1;
     return (typeof x==="string" ? x.localeCompare(y) : x-y) * d; });
+  const LOWK = ["name","amc","ter","mgmt","load","sd3y","risk"];
+  $("#sortSel").innerHTML = COLS[st.view].map(([ck,label]) => `<option value="${ck}"${ck===k?" selected":""}>${label}</option>`).join("");
+  $("#sortDir").textContent = d > 0 ? (typeof all[0]?.[k] === "string" ? "A→Z ↑" : "Low→High ↑") : (typeof all[0]?.[k] === "string" ? "Z→A ↓" : "High→Low ↓");
   $("#head").innerHTML = "<tr>" + COLS[st.view].map(([ck,label,cl]) => `<th data-k="${ck}"${cl||ck==="name"?` class="${[cl, ck==="name"?"pin":""].filter(Boolean).join(" ")}"`:""}${ck===k?` aria-sort="${d>0?"ascending":"descending"}"`:""}>${label}</th>`).join("") + "</tr>";
   const filtered = st.q||st.amc||st.pick||st.region||st.type||st.cat||st.tax;
   $("#reset").hidden = !filtered;
@@ -823,6 +864,14 @@ function divCal(){
       <td class="num">${v.toFixed(4)}</td><td class="num">${(v / r.nav * 100).toFixed(2)}%</td><td class="num">${fmtYld(r.yld)}</td></tr>`; }).join("");
   $("#divMore").hidden = ev.length <= 8; $("#divMore").textContent = divCal.all ? "Show fewer" : `Show all ${ev.length}`;
 }
+
+function labelCells(){
+  document.querySelectorAll(".board table, table.mtab, table.ctable, .divcal table").forEach(t => {
+    const hs = [...t.querySelectorAll("thead th")].map(th => th.textContent.trim());
+    t.querySelectorAll("tbody tr").forEach(tr => [...tr.children].forEach((td, i) => { if (hs[i] && td.dataset.label !== hs[i]) td.dataset.label = hs[i]; }));
+  });
+}
+new MutationObserver(later(labelCells, 40)).observe(document.body, {childList: true, subtree: true});
 
 function syncTopScroll(){
   const ts = $("#topScroll"), bd = $(".board"), tb = bd && bd.querySelector("table"); if (!ts || !tb) return;
@@ -1345,7 +1394,7 @@ async function showCompare(rows){
     <div class="chartbox" id="cChart"><div class="sub">Loading price history…</div></div>
   </section>
   <section class="panel">
-    <div class="phead"><h3>Side by side</h3><span class="sub">Best value in each row is highlighted</span></div>
+    <div class="phead"><h3>Side by side</h3><span class="sub">Best value in each row is highlighted<span class="swipe"> · swipe sideways to see every fund →</span></span></div>
     <div class="ftwrap cwrap" id="cTable"></div>
   </section>
   <div class="cols">
