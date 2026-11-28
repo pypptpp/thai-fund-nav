@@ -453,6 +453,40 @@ def fetch_dividends():
     log(f"  {len(payouts)} payouts, policy for {len(policy)} funds")
 
 
+# ------------------------------------------------------------------ factsheet links
+def fetch_factsheet_links():
+    """Link to each class's latest factsheet PDF (AMC website + SEC copy), about 75 calls, refreshed daily."""
+    old = read(DATA / "factsheet_links.json")
+    if old and (dt.datetime.now(BKK) - dt.datetime.fromisoformat(old["updated"])).total_seconds() < 20 * 3600:
+        log("Factsheet links: up to date")
+        return
+    log("Factsheet links …")
+    try:
+        rows = get_all("/factsheet/urls", {})
+    except Exception as e:  # never stop the NAV update because of this
+        log(f"  skipped: {e}")
+        return
+    rank = {"Monthly": 2, "SignificantFactsheet": 1}
+    best = {}
+    for r in rows:
+        pid, cls = r.get("proj_id"), r.get("fund_class_name") or "main"
+        amc, sec = (r.get("amc_url_factsheet") or "").strip(), (r.get("pdf_factsheet") or "").strip()
+        if not pid or not (amc.startswith("http") or sec.startswith("http")):
+            continue
+        key = (rank.get(r.get("prospectus_type"), 0), (r.get("as_of_date") or "")[:10])
+        if (pid, cls) not in best or key > best[(pid, cls)][0]:
+            best[(pid, cls)] = (key, [amc if amc.startswith("http") else "", sec if sec.startswith("http") else "",
+                                      key[1], r.get("prospectus_type") or ""])
+    links = {}
+    for (pid, cls), (_, v) in best.items():
+        links.setdefault(pid, {})[cls] = v
+    if old and len(links) < len(old.get("links", {})) * 0.8:
+        log(f"  only {len(links)} funds came back — keeping previous links")
+        return
+    write(DATA / "factsheet_links.json", {"updated": dt.datetime.now(BKK).isoformat(timespec="minutes"), "links": links})
+    log(f"  factsheet links for {len(links)} funds")
+
+
 def norm(s):
     return "".join(ch for ch in (s or "").upper() if ch.isalnum())
 
@@ -578,6 +612,7 @@ def build():
     funds = {f["id"]: f for f in (read(DATA / "funds.json") or {"funds": []})["funds"]}
     fs = (read(DATA / "factsheet.json") or {"funds": {}})["funds"]
     dv = read(DATA / "dividends.json") or {"payouts": [], "policy": {}}
+    fslinks = (read(DATA / "factsheet_links.json") or {"links": {}})["links"]
     files = sorted(DAILY.glob("*.json"))
     if not files:
         sys.exit("ERROR: no data yet — run `python update.py fetch` first.")
@@ -758,6 +793,8 @@ def build():
         info = {k: f.get(k, "") for k in ("since", "style", "fx", "master_country", "policy", "amc_th", "en", "th")}
         info["classes"] = {c: {k: v for k, v in (m or {}).items() if k in ("detail", "who", "isin")}
                            for c, m in (f.get("classes") or {}).items()}
+        if fslinks.get(pid):
+            info["fs"] = fslinks[pid]  # {class: [amc_pdf, sec_pdf, as_of, type]}
         write(SITE / "data" / "h" / f"{pid}.json", {"info": info, "series": classes, "divs": per_div.get(pid, {})})
     latest.sort(key=lambda x: x["name"])
     write(SITE / "data" / "latest.json", {
@@ -810,6 +847,7 @@ if __name__ == "__main__":
         funds = fetch_funds()
         fetch_factsheets(funds, force=a.factsheets)
         fetch_dividends()
+        fetch_factsheet_links()
         fetch_navs(a.days, a.start, a.until)
     elif a.step == "factsheets":
         fetch_factsheets(fetch_funds(), force=True)

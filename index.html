@@ -294,6 +294,9 @@ sup.fs{color:var(--accent);font-weight:600;margin-left:1px}
 .hpill.Hedged{border-color:var(--c0);color:var(--c0)}
 .hpill.Dynamic{border-color:var(--c4);color:var(--c4)}
 .cmpnote{border-left:3px solid var(--accent)}
+.fsbtn{display:inline-flex;align-items:center;border:1px solid var(--line);background:var(--panel);color:var(--accent);border-radius:8px;padding:7px 12px;font-weight:600;font-size:13px;text-decoration:none}
+.fsbtn:hover{border-color:var(--accent)}
+.fslink{color:var(--accent);white-space:nowrap}
 /* ---------- phones: tables become cards ---------- */
 .msort{display:none;align-items:center;gap:6px}
 .msort select{padding:7px 8px}
@@ -323,6 +326,7 @@ sup.fs{color:var(--accent);font-weight:600;margin-left:1px}
   .ctab .fcol a{font-size:13px}
   .ctab thead th{font-size:12px}
   .tabs{flex-wrap:wrap}
+  .fprice > div[style]{justify-content:flex-start!important}
   .tabs button{padding:6px 9px}
   .tray{padding-block:8px}
   .traychips{display:none}
@@ -465,7 +469,8 @@ document.addEventListener("click", e => {
   const t = e.target, at = (sel) => t.closest(sel);
   const rowOf = key => all.find(r => r.key === key);
   let el;
-  if ((el = at("#viewTabs [data-v]"))) track("tab", {tab: el.dataset.v});
+  if ((el = at("[data-fs]"))) track("factsheet", {fund: cur ? cur.name : "compare", source: el.dataset.fs});
+  else if ((el = at("#viewTabs [data-v]"))) track("tab", {tab: el.dataset.v});
   else if ((el = at("[data-pick]"))) track("quick-filter", {theme: el.dataset.pick});
   else if ((el = at("#thPeriod [data-p]"))) track("theme-period", {period: el.dataset.p});
   else if ((el = at(".cmpb"))) { const r = rowOf(el.dataset.k); if (r && !cmp.includes(r.key)) track("compare-add", {fund: r.name}); }
@@ -1015,7 +1020,7 @@ async function showFund(r){
       <span class="nav">${fmtNav(r.nav)}</span>
       <span class="chg">${fmtPct(r.d1)}</span>
       <span class="sub">NAV per unit (THB) on ${thDate(r.date)}${r.sell != null ? ` · offer ${fmtNav(r.sell)} / bid ${fmtNav(r.buy)}` : ""}</span>
-      <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end"><button class="cmpbtn" id="cmpBtn" aria-pressed="${cmp.includes(r.key)}">${cmp.includes(r.key) ? "✓ In compare" : "+ Compare"}</button>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end"><a class="fsbtn" id="fsBtn" hidden target="_blank" rel="noopener" data-fs="amc">Factsheet PDF ↗</a><button class="cmpbtn" id="cmpBtn" aria-pressed="${cmp.includes(r.key)}">${cmp.includes(r.key) ? "✓ In compare" : "+ Compare"}</button>
       <button class="watch" id="watchBtn" style="margin-top:0" aria-pressed="${watch.has(r.key)}">${watch.has(r.key) ? "★ On your watchlist" : "☆ Add to watchlist"}</button></div>
     </div>
   </header>
@@ -1144,6 +1149,8 @@ async function showFund(r){
   const dl = ((h && h.divs) || {})[r.cls] || [];
   curDivs = dl; divPanel(dl, curSeries);
   about(r, info);
+  const fv = fsFor(info, r), fb = $("#fsBtn");
+  if (fb && fv && (fv[0] || fv[1])) { fb.href = fv[0] || fv[1]; fb.title = `Fund factsheet from ${fv[0] ? "the fund company" : "the SEC"}${fv[2] ? ", as of " + thDate(fv[2]) : ""}`; fb.hidden = false; }
   document.querySelectorAll("[data-who]").forEach(td => { const c = (info.classes || {})[td.dataset.who]; td.textContent = c ? (c.detail || c.who || "–") : "–"; td.title = c?.who || ""; });
   if (curSeries.length < 2) {
     $("#bigChart").innerHTML = `<div class="sub">${h ? "Not enough price history yet." : "Price history is not included in this preview. The live site has it for every fund."}</div>`;
@@ -1171,6 +1178,7 @@ function about(r, info){
     ci.isin && ["ISIN", `<span class="num">${esc(ci.isin)}</span>`],
     ["SEC project ID", `<span class="num">${esc(r.id)}</span>`],
     r.asof && ["Factsheet date", thDate(r.asof)],
+    fsFor(info, r) && ["Factsheet", fsLinks(fsFor(info, r))],
   ].filter(Boolean);
   $("#aboutList").innerHTML = rows.map(([k,v]) => `<dt>${k}</dt><dd>${v}</dd>`).join("");
   const old = $("#about .policy"); if (old) old.remove();
@@ -1304,6 +1312,18 @@ let cmp = (store.get("compare", []) || []).slice(0, MAXC), cmpP = "1Y", cmpData 
 const cmpRows = () => cmp.map(k => all.find(r => r.key === k)).filter(Boolean);
 const cmpHash = rows => "compare--" + rows.map(slugOf).join("--");
 const shortName = r => r.cls === "main" ? r.abbr : r.cls;
+// latest factsheet PDF for this share class: [AMC link, SEC copy, as-of date, type]
+function fsFor(info, r){
+  const m = info && info.fs; if (!m) return null;
+  const n = s => String(s || "").toUpperCase().replace(/[^A-Z0-9]/g, "");
+  const ks = Object.keys(m);
+  const k = m[r.cls] ? r.cls : ks.find(x => n(x) === n(r.cls)) || (m.main ? "main" : ks.find(x => n(x) === n(r.abbr)) || ks[0]);
+  return k ? m[k] : null;
+}
+const fsLinks = v => !v ? '<span class="flat">–</span>' :
+  [v[0] && `<a class="fslink" href="${esc(v[0])}" target="_blank" rel="noopener" data-fs="amc">Factsheet PDF ↗</a>`,
+   v[1] && `<a class="fslink sub" href="${esc(v[1])}" target="_blank" rel="noopener" data-fs="sec">SEC copy ↗</a>`].filter(Boolean).join(" · ")
+  + (v[2] ? ` <span class="sub">· ${v[3] === "IPO" ? "IPO factsheet, " : ""}as of ${thDate(v[2])}</span>` : "");
 
 function toggleCmp(r){
   const i = cmp.indexOf(r.key);
@@ -1481,6 +1501,7 @@ function cmpTable(rows, sc, {stats = [], info = []}){
     ["Master fund", r => r.master || null, esc],
     ["Currency hedging", r => r.hedge || null, esc],
     ["Launched", (r, i) => age(i), v => v],
+    ["Factsheet", (r, i) => fsFor(info[i], r), v => fsLinks([v[0], v[1]])],
   ];
   const head = `<tr><th class="mcol"></th>${rows.map((r, i) => `<th class="fcol"><span class="sw" style="background:var(--c${i})"></span><a href="#${slugOf(r)}">${esc(shortName(r))}</a><span class="sub">${esc(r.amc)}</span></th>`).join("")}</tr>`;
   const body = R.map(([label, get, fmt, dir]) => {
